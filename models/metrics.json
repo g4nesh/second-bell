@@ -1,0 +1,9 @@
+{
+  "return_mae":3.965,
+  "afterschool_mae":1.525,
+  "risk_accuracy":0.929,
+  "risk_auc":0.982,
+  "conformal_padding":6.633,
+  "training_rows":10688.0,
+  "training_school_days":540.0
+}
