@@ -20,6 +20,9 @@ from recommend import recommend_for_plan, confidence_label
 from impact import summarize_impact
 from simulate_data import generate_cafeteria_history
 from train_models import FEATURES, MODEL_FILES, train_all
+from afterschool import forecast_after_school_count
+from digital_twin import build_digital_twin
+from vision import VISION_CLASSES, export_commands, simulate_reduction_detection, vision_deployment_card
 
 st.set_page_config(page_title="Second Bell", layout="wide")
 
@@ -186,7 +189,32 @@ with st.sidebar:
     event_tag = st.selectbox("School event", ["normal", "field_trip", "exam_day", "assembly", "sports_away", "club_fair", "early_release"], index=1)
     entree = st.selectbox("Main entree", ["pasta bowl", "veggie wrap", "chicken sandwich", "cheese pizza", "rice bowl", "taco tray"], index=0)
     expected_attendance = st.slider("Expected attendance", 700, 1120, 910, 10)
-    afterschool_activity_count = st.slider("After-school students needing snacks", 20, 270, 175, 5)
+    afterschool_forecast = forecast_after_school_count(
+        history,
+        day_of_week=day_of_week,
+        weather_tag=weather_tag,
+        event_tag=event_tag,
+        expected_attendance=expected_attendance,
+    )
+    afterschool_activity_count = afterschool_forecast.predicted_count
+    st.metric(
+        "After-school snack demand forecast",
+        f"{afterschool_activity_count}",
+        f"{afterschool_forecast.low}-{afterschool_forecast.high}",
+    )
+    st.caption("Linear regression from the last two school weeks of anonymous aggregate after-school counts.")
+    with st.expander("Two-week after-school inputs"):
+        st.dataframe(
+            afterschool_forecast.history_window[
+                ["date", "day", "weather", "event", "expected_lunch_attendance", "actual_after_school_students"]
+            ],
+            use_container_width=True,
+            hide_index=True,
+        )
+        st.write(
+            f"{afterschool_forecast.model_type}; MAE {afterschool_forecast.mean_absolute_error:.1f}; "
+            f"R2 {afterschool_forecast.r2:.3f}"
+        )
     share_table_monitor = st.toggle("Share-table monitor available", value=True)
     cooler_capacity = st.slider("Cooler capacity for cold items", 0, 120, 90, 5, disabled=not share_table_monitor)
     line_mode = st.radio(
@@ -209,6 +237,19 @@ plan = build_plan(
 
 pred = predict_plan(plan, models)
 pred["drivers"] = pred.apply(explain_drivers, axis=1)
+twin = build_digital_twin(
+    pred,
+    afterschool_predicted_count=afterschool_forecast.predicted_count,
+    afterschool_low=afterschool_forecast.low,
+    afterschool_high=afterschool_forecast.high,
+    share_table_monitor=bool(share_table_monitor),
+)
+pred = pred.merge(
+    twin.item_estimates,
+    on=["menu_item", "lunch_period", "component_type"],
+    how="left",
+)
+vision_reduction = simulate_reduction_detection(pred, twin.item_estimates)
 actions = recommend_for_plan(pred)
 baseline_items = float(pred["predicted_return_q50"].sum())
 primary_actions = actions[actions["count_in_impact"]] if not actions.empty else actions
@@ -221,7 +262,7 @@ setup = pd.DataFrame(
         ["School", "Cedar Grove High School synthetic demo"],
         ["Lunch context", f"{day_of_week}, {weather_tag.replace('_', ' ')}, {event_tag.replace('_', ' ')}, {entree}"],
         ["Operations", f"{expected_attendance} expected students, cooler capacity {int(cooler_capacity if share_table_monitor else 0)}, monitor {'yes' if share_table_monitor else 'no'}"],
-        ["After school", f"{afterschool_activity_count} students across tutoring, robotics, track, and clubs"],
+        ["After school", f"{afterschool_activity_count} predicted students ({afterschool_forecast.low}-{afterschool_forecast.high}) from two-week linear regression"],
     ],
     columns=["Input", "Value"],
 )
@@ -262,7 +303,62 @@ with right:
     )
     st.dataframe(rescue_clock, use_container_width=True, hide_index=True)
 
-st.subheader("3. Why this is happening")
+st.subheader("3. Sensor fusion digital twin")
+twin_total = float(twin.item_estimates["digital_twin_estimate"].sum())
+twin_uncertainty = float(np.sqrt(np.square(twin.item_estimates["digital_twin_uncertainty"]).sum()))
+online_sensors = int((twin.sensor_inventory["status"] == "online").sum())
+f1, f2, f3, f4 = st.columns(4)
+f1.metric("Twin recoverable estimate", f"{twin_total:.0f}", f"+/- {twin_uncertainty:.0f}")
+f2.metric("Physical sensors online", f"{online_sensors}/{len(twin.sensor_inventory)}")
+f3.metric("Reconciliation flags", int(twin.item_estimates["inconsistency_flag"].sum()))
+f4.metric("Snack demand cap", f"{afterschool_activity_count}", f"{afterschool_forecast.low}-{afterschool_forecast.high}")
+
+example_estimate = twin.item_estimates.sort_values("digital_twin_estimate", ascending=False).iloc[0]
+example_obs = twin.observations[
+    (twin.observations["menu_item"] == example_estimate["menu_item"])
+    & (twin.observations["lunch_period"] == example_estimate["lunch_period"])
+    & (twin.observations["used_in_estimate"])
+]
+camera_value = example_obs.loc[example_obs["sensor"] == "serving-line camera", "observed_count"].iloc[0]
+pos_value = example_obs.loc[example_obs["sensor"] == "point-of-sale meal counts", "observed_count"].iloc[0]
+load_cell_value = example_obs.loc[example_obs["sensor"] == "serving-bin load cell", "observed_count"].iloc[0]
+st.info(
+    f"Example reconciliation: camera sees {camera_value:.0f} {example_estimate['menu_item']} returns, "
+    f"POS/staging implies {pos_value:.0f}, and the bin load cell implies {load_cell_value:.0f}. "
+    f"The digital twin uses {example_estimate['digital_twin_estimate']:.0f} +/- "
+    f"{example_estimate['digital_twin_uncertainty']:.0f}, not a single sensor pretending to be perfect."
+)
+
+tw_left, tw_right = st.columns([1.15, 1])
+with tw_left:
+    st.dataframe(
+        twin.item_estimates.sort_values("digital_twin_estimate", ascending=False).head(12),
+        use_container_width=True,
+        hide_index=True,
+    )
+with tw_right:
+    st.dataframe(twin.world_state, use_container_width=True, hide_index=True)
+
+with st.expander("Physical sensor layer and trackpad prototype bridge", expanded=False):
+    st.dataframe(twin.sensor_inventory, use_container_width=True, hide_index=True)
+    st.dataframe(twin.bridge_notes, use_container_width=True, hide_index=True)
+
+st.subheader("4. Computer vision reduction model")
+cv1, cv2, cv3 = st.columns(3)
+cv1.metric("Vision classes", len(VISION_CLASSES))
+cv2.metric("Items not reducing", int((vision_reduction["status"] == "not reducing").sum()))
+cv3.metric("Deployment mode", "YOLO-ready")
+st.dataframe(
+    vision_reduction.head(14),
+    use_container_width=True,
+    hide_index=True,
+)
+with st.expander("Deployable CV model contract"):
+    st.write("The demo can run in simulation mode, or load `models/cafeteria_yolo.pt` when trained weights are added.")
+    st.dataframe(vision_deployment_card(), use_container_width=True, hide_index=True)
+    st.dataframe(export_commands(), use_container_width=True, hide_index=True)
+
+st.subheader("5. Why this is happening")
 show_cols = [
     "menu_item",
     "lunch_period",
@@ -273,6 +369,8 @@ show_cols = [
     "predicted_return_q90",
     "ghost_risk_probability",
     "predicted_afterschool_demand",
+    "digital_twin_estimate",
+    "digital_twin_uncertainty",
     "confidence",
     "anomaly_review",
     "drivers",
@@ -283,7 +381,7 @@ st.dataframe(
     hide_index=True,
 )
 
-st.subheader("4. Action plan and human approval")
+st.subheader("6. Action plan and human approval")
 approved_action_ids: list[str] = []
 if actions.empty:
     st.info("No major rescue action recommended for this scenario. Log actual returns and monitor the next lunch period.")
@@ -311,6 +409,16 @@ else:
                 f"Expected recovery if selected: **{action['expected_items_recovered']} items** | "
                 f"Labor: **{action['labor_minutes']} min** | Stockout risk: **{action['stockout_risk_pct']}%**"
             )
+            twin_match = twin.item_estimates[
+                (twin.item_estimates["menu_item"] == action["menu_item"])
+                & (twin.item_estimates["lunch_period"] == action["lunch_period"])
+            ]
+            if not twin_match.empty:
+                twin_row = twin_match.iloc[0]
+                c2.write(
+                    f"Digital twin live estimate: **{twin_row['digital_twin_estimate']:.0f} +/- "
+                    f"{twin_row['digital_twin_uncertainty']:.0f} recoverable items**"
+                )
             c2.write(
                 f"Deploy by **{action['deploy_by']}** | Window **{action['rescue_window_start']} to {action['rescue_window_end']}** | "
                 f"Cold-chain deadline **{action['cold_chain_deadline']}**"
@@ -331,7 +439,7 @@ remaining_items = max(0.0, baseline_items - impact["items_recovered_mid"])
 baseline_kg = float((pred["predicted_return_q50"] * pred["kg_per_item"]).sum())
 remaining_kg = max(0.0, baseline_kg - impact["kg_diverted_mid"])
 
-st.subheader("5. Impact receipt")
+st.subheader("7. Impact receipt")
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Approved actions", impact["selected_action_count"])
 col2.metric("Recovered range", _range_text(impact["items_recovered_low"], impact["items_recovered_high"], " items"))
@@ -378,7 +486,8 @@ with st.expander("Model card, data disclosure, and source grounding"):
     st.write("**Demo health:** " + str(models.get("_asset_status", "Loaded.")))
     st.write(
         "**Models used:** RandomForestClassifier for ghost-component risk, quantile GradientBoostingRegressor for unopened-return intervals, "
-        "RandomForestRegressor for after-school demand, and IsolationForest for unusual operating days."
+        "two-week LinearRegression for aggregate after-school students, RandomForestRegressor for item-level after-school demand, "
+        "IsolationForest for unusual operating days, and a sensor-fusion digital twin for live count uncertainty."
     )
     st.json(metrics)
     st.write(f"Synthetic training rows: {len(history):,}; synthetic school days: {history['date'].nunique():,}")

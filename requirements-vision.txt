@@ -1,0 +1,3 @@
+# Optional live computer-vision runtime.
+# The base Streamlit demo runs without this file.
+ultralytics>=8.3,<9.0

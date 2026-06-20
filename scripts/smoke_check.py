@@ -18,6 +18,9 @@ from simulate_data import generate_cafeteria_history
 from train_models import FEATURES, MODEL_FILES, train_all
 from recommend import confidence_label, recommend_for_plan
 from impact import summarize_impact
+from afterschool import forecast_after_school_count
+from digital_twin import SENSOR_SOURCES, build_digital_twin
+from vision import VISION_CLASSES, export_commands, simulate_reduction_detection, vision_deployment_card
 
 DATA_PATH = ROOT / "data" / "second_bell_synthetic_cafeteria.csv"
 MODEL_DIR = ROOT / "models"
@@ -138,9 +141,60 @@ def assert_cold_chain_blocks(models: dict) -> None:
     assert blocked.empty, blocked[["menu_item", "recommended_action"]].to_dict("records")
 
 
+def assert_afterschool_linreg(history: pd.DataFrame) -> None:
+    forecast = forecast_after_school_count(
+        history,
+        day_of_week="Tuesday",
+        weather_tag="rainy",
+        event_tag="field_trip",
+        expected_attendance=910,
+    )
+    assert forecast.training_days == 10
+    assert "LinearRegression" in forecast.model_type
+    assert 20 <= forecast.low <= forecast.predicted_count <= forecast.high <= 270
+    assert len(forecast.history_window) == 10
+    assert "actual_after_school_students" in forecast.history_window.columns
+
+
+def assert_digital_twin_and_vision_layers(pred: pd.DataFrame, history: pd.DataFrame) -> None:
+    forecast = forecast_after_school_count(
+        history,
+        day_of_week="Tuesday",
+        weather_tag="rainy",
+        event_tag="field_trip",
+        expected_attendance=910,
+    )
+    twin = build_digital_twin(
+        pred,
+        afterschool_predicted_count=forecast.predicted_count,
+        afterschool_low=forecast.low,
+        afterschool_high=forecast.high,
+        share_table_monitor=True,
+    )
+    inventory_sensors = set(twin.sensor_inventory["sensor"])
+    assert set(SENSOR_SOURCES).issubset(inventory_sensors)
+    assert not twin.observations.empty
+    assert not twin.item_estimates.empty
+    assert (twin.item_estimates["digital_twin_uncertainty"] > 0).all()
+    assert "serving-line camera" in set(twin.observations["sensor"])
+    assert "point-of-sale meal counts" in set(twin.observations["sensor"])
+    assert "serving-bin load cell" in set(twin.observations["sensor"])
+    assert not twin.world_state.empty
+
+    reduction = simulate_reduction_detection(pred, twin.item_estimates)
+    assert set(["menu_item", "vision_class", "visual_reduction_pct", "status"]).issubset(reduction.columns)
+    assert set(reduction["vision_class"]).issubset(set(VISION_CLASSES))
+    assert not vision_deployment_card().empty
+    assert {"ONNX laptop/edge runtime", "Apple CoreML package", "NVIDIA TensorRT engine"}.issubset(
+        set(export_commands()["target"])
+    )
+
+
 def main() -> None:
     models = load_models()
+    history = ensure_data()
     assert_scenarios_include_entrees()
+    assert_afterschool_linreg(history)
 
     plan = build_plan("Tuesday", "rainy", "field_trip", "pasta bowl", 910, 1, 90, 175)
     pred = predict(plan, models)
@@ -150,6 +204,7 @@ def main() -> None:
     assert not actions.empty
     assert_no_overcount(actions, pred)
     assert_cold_chain_blocks(models)
+    assert_digital_twin_and_vision_layers(pred, history)
     print("Second Bell smoke check passed.")
 
 

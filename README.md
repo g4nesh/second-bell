@@ -22,19 +22,63 @@ lunch-line behavior -> unwanted sealed item -> unopened return -> cold-chain tim
 - Feature encoder for 22 aggregate item-period cafeteria signals.
 - RandomForestClassifier for high ghost-component risk.
 - Quantile GradientBoostingRegressor heads for Q10, Q50, and Q90 unopened-return intervals.
-- RandomForestRegressor for after-school snack demand.
+- Two-week LinearRegression forecast for the anonymous count of students staying after school.
+- RandomForestRegressor for item-level after-school snack demand once that aggregate count is predicted.
 - IsolationForest anomaly detector for unusual operating days.
+- Sensor-fusion digital twin that reconciles camera, scale, load-cell, cooler, POS, kitchen, after-school, and disposal-bin signals.
+- YOLO-ready computer-vision scaffold for detecting sealed returns, serving-bin drawdown, and opened tray waste.
 - Rule-constrained safety compiler and recommendation engine with food-safety guardrails.
 - Capped impact receipt that counts only approved primary actions.
 
 ## Demo Flow
 
-1. Morning setup: menu, attendance, event, weather, cooler capacity, monitor availability, and after-school demand.
+1. Morning setup: menu, attendance, event, weather, cooler capacity, and monitor availability.
 2. Ghost risk forecast: which unopened items are likely to return and when.
-3. Why this is happening: model drivers and anomaly review flags.
-4. Action plan: timed cards for share-table cooler, two-wave staging, line placement, or after-school routing.
-5. Human approval: Ms. Rivera approves only actions that satisfy the safety gate.
-6. Impact receipt: recovered items, kg diverted, CO2e avoided, food value protected, labor minutes, and stockout risk.
+3. Sensor fusion digital twin: physical sensors and model predictions are reconciled into visible uncertainty ranges.
+4. Computer vision reduction model: simulated or live YOLO-compatible detections show what is reducing and what is not.
+5. Why this is happening: model drivers and anomaly review flags.
+6. Action plan: timed cards for share-table cooler, two-wave staging, line placement, or after-school routing.
+7. Human approval: Ms. Rivera approves only actions that satisfy the safety gate.
+8. Impact receipt: recovered items, kg diverted, CO2e avoided, food value protected, labor minutes, and stockout risk.
+
+## After-School Forecast
+
+The sidebar no longer asks the user to guess "after-school students needing snacks." The app builds a daily aggregate history from the synthetic cafeteria data, takes the last 10 school days, and fits a `LinearRegression` model using day, weather, event, trend, and expected-attendance signals. The predicted count and range are then passed into the cafeteria scenario and recommendation engine.
+
+## Sensor Fusion Digital Twin
+
+The app models a practical cafeteria sensor layer:
+
+- Serving-line camera for visible sealed-item and serving-bin detections.
+- Scale beneath the tray-return platform.
+- Load cells beneath high-waste serving bins.
+- Temperature logger in the share-table cooler.
+- Door-open sensor on the cooler.
+- Production and staging counts from kitchen staff.
+- Point-of-sale meal counts.
+- Anonymous after-school attendance or demand counts.
+- Scale beneath the final compost or disposal bin.
+
+Second Bell reconciles inconsistent observations rather than trusting one source. For each item-period, the dashboard shows the camera count, POS/staging count, load-cell estimate, model prior, fused digital-twin estimate, and uncertainty range.
+
+## Hardware Prototype Path
+
+For a hackathon-friendly prototype, the repo documents a Mac Force Touch trackpad bridge:
+
+- TrackWeight: https://github.com/KrishKrosh/TrackWeight
+- OpenMultitouchSupport: https://github.com/KrishKrosh/OpenMultitouchSupport
+
+Those projects are useful for demonstrating pressure-derived load-cell readings through Swift/macOS. They are not treated as certified production food-service scales; deployment should use calibrated load cells and temperature loggers.
+
+## Vision Deployment Path
+
+The included `CafeteriaVisionModel` wrapper can load `models/cafeteria_yolo.pt` if trained weights are added and `ultralytics` is installed. The app currently runs a deterministic simulated detection layer so the demo stays lightweight. Export commands are shown in the dashboard for ONNX, Apple CoreML, and TensorRT targets.
+
+Optional live CV install:
+
+```bash
+pip install -r requirements-vision.txt
+```
 
 ## Run Locally
 
