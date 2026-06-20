@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Second Bell is an AI rescue clock for unopened school cafeteria food, predicting ghost components and recommending safe, timed interventions."
+      content="Second Bell is an AI rescue clock for unopened school cafeteria food, predicting ghost components and recommending safe timed interventions."
     />
-    <meta name="theme-color" content="#07130f" />
-    <title>Second Bell | AI Food Waste Rescue Clock</title>
+    <meta name="theme-color" content="#050505" />
+    <title>Second Bell | Reliable AI for School Food Rescue</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,255 +19,202 @@
     <link rel="stylesheet" href="assets/site.css" />
   </head>
   <body>
-    <div class="progress" aria-hidden="true"></div>
-    <nav class="nav" aria-label="Primary navigation">
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <header class="site-header">
       <a class="brand" href="#top" aria-label="Second Bell home">
-        <span class="brand-mark"></span>
-        <span>Second Bell</span>
+        <span class="brand-glyph" aria-hidden="true"></span>
+        <span>second bell</span>
       </a>
-      <div class="nav-links">
-        <a href="#problem">Problem</a>
-        <a href="#system">System</a>
-        <a href="#demo">Demo</a>
-        <a href="#impact">Impact</a>
+      <nav aria-label="Primary navigation">
+        <a href="#platform">Platform</a>
+        <a href="#clock">Clock</a>
+        <a href="#proof">Proof</a>
+        <a href="#submit">Submit</a>
+      </nav>
+      <div class="header-actions">
+        <a class="quiet-link" href="DEVPOST_COPY.md">Devpost</a>
+        <a class="solid-link" href="README.md">View build</a>
       </div>
-      <a class="nav-cta" href="README.md">View build</a>
-    </nav>
+    </header>
 
     <main id="top">
-      <section class="hero section" data-theme="hero">
-        <div class="hero-copy reveal">
-          <p class="eyebrow">High School Challenge 2 - Food Waste Rescue Radar</p>
-          <h1>Rescue unopened lunch food before the second bell.</h1>
-          <p class="hero-lede">
-            Second Bell predicts ghost components - unopened milk, whole fruit, and sealed sides students
-            took but never wanted - then gives Ms. Rivera a timed, safety-gated action plan.
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="#demo">Watch the rescue clock</a>
-            <a class="button ghost" href="#system">See the AI flow</a>
-          </div>
-        </div>
-
-        <div class="signal-board reveal" aria-label="Animated Second Bell rescue dashboard">
-          <div class="board-grid"></div>
-          <div class="signal-topline">
-            <span>Rainy Tuesday</span>
-            <span>Second lunch</span>
-            <span>Field trip</span>
-          </div>
-          <div class="pulse-clock">
-            <div class="clock-ring"></div>
-            <div class="clock-face">
-              <strong>12:12</strong>
-              <span>deploy by</span>
-            </div>
-          </div>
-          <div class="signal-stack" aria-hidden="true">
-            <div class="signal-card sliding-card card-a">
-              <span class="status high"></span>
-              <div>
-                <strong>White milk risk</strong>
-                <small>64-91 unopened cartons</small>
-              </div>
-            </div>
-            <div class="signal-card sliding-card card-b">
-              <span class="status medium"></span>
-              <div>
-                <strong>Share cooler</strong>
-                <small>recover 36-58 items</small>
-              </div>
-            </div>
-            <div class="signal-card sliding-card card-c">
-              <span class="status safe"></span>
-              <div>
-                <strong>Manager approval</strong>
-                <small>cold-chain gate active</small>
-              </div>
-            </div>
-          </div>
-          <div class="scanline"></div>
-        </div>
-      </section>
-
-      <section class="proof-strip" aria-label="Second Bell workflow">
-        <div class="ticker">
-          <span>menu inputs</span>
-          <span>attendance signals</span>
-          <span>ghost risk model</span>
-          <span>rescue window</span>
-          <span>human approval</span>
-          <span>impact receipt</span>
-          <span>menu inputs</span>
-          <span>attendance signals</span>
-          <span>ghost risk model</span>
-          <span>rescue window</span>
-          <span>human approval</span>
-          <span>impact receipt</span>
-        </div>
-      </section>
-
-      <section id="problem" class="section problem">
-        <div class="section-kicker reveal">The local bottleneck</div>
-        <div class="split">
-          <div class="reveal">
-            <h2>The waste is not always leftovers. Sometimes it is food that was never wanted.</h2>
-          </div>
-          <div class="copy-column reveal">
-            <p>
-              In a fast lunch line, a student grabs milk, fruit, or a sealed side because it is required,
-              convenient, or sitting before the cashier. Minutes later it returns untouched.
-            </p>
-            <p>
-              Second Bell treats that moment as a rescue window, not a trash report. It connects lunch-line
-              behavior, cold storage, share tables, and after-school snack demand in one local decision.
-            </p>
-          </div>
-        </div>
-
-        <div class="pathway" aria-label="Ghost component pathway">
-          <article class="path-card reveal">
-            <span>01</span>
-            <h3>Selected</h3>
-            <p>A meal component is taken during service, often as a default item.</p>
-          </article>
-          <article class="path-card reveal">
-            <span>02</span>
-            <h3>Returned</h3>
-            <p>The item comes back unopened or whole at the tray return station.</p>
-          </article>
-          <article class="path-card reveal">
-            <span>03</span>
-            <h3>Timed</h3>
-            <p>A cold-chain or supervision deadline determines whether rescue is still possible.</p>
-          </article>
-          <article class="path-card reveal">
-            <span>04</span>
-            <h3>Routed</h3>
-            <p>Eligible items move to a monitored share table or approved after-school demand.</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="system" class="section system">
-        <div class="section-kicker reveal">Input -> AI -> insight -> action</div>
-        <h2 class="centered reveal">A lightweight AI stack built for one cafeteria decision.</h2>
-        <div class="system-grid">
-          <article class="system-card reveal">
-            <p class="label">Inputs</p>
-            <h3>Morning setup</h3>
-            <p>Menu, weather, event tag, attendance, line setup, cooler capacity, monitor availability, and after-school demand.</p>
-          </article>
-          <article class="system-card reveal">
-            <p class="label">AI</p>
-            <h3>Ghost forecast</h3>
-            <p>Classifier, quantile regressors, demand matcher, anomaly detector, and rule-constrained state machine.</p>
-          </article>
-          <article class="system-card reveal">
-            <p class="label">Output</p>
-            <h3>Action cards</h3>
-            <p>Deploy by time, recovery range, safety gate, labor load, stockout risk, and manager approval.</p>
-          </article>
-        </div>
-
-        <div class="model-rail reveal">
-          <div class="rail-node active">
-            <span></span>
-            <strong>Risk classifier</strong>
-            <small>high ghost-component probability</small>
-          </div>
-          <div class="rail-node">
-            <span></span>
-            <strong>Quantile forecast</strong>
-            <small>low, median, high unopened returns</small>
-          </div>
-          <div class="rail-node">
-            <span></span>
-            <strong>Anomaly detector</strong>
-            <small>unusual operating days</small>
-          </div>
-          <div class="rail-node">
-            <span></span>
-            <strong>State machine</strong>
-            <small>cold-chain and approval gates</small>
-          </div>
-        </div>
-      </section>
-
-      <section id="demo" class="section demo">
-        <div class="demo-copy reveal">
-          <p class="section-kicker">Live demo story</p>
-          <h2>Rainy Tuesday. Pasta lunch. Juniors away. The model spots the spike before tray returns do.</h2>
+      <section class="hero media-section">
+        <div class="hero-media" aria-hidden="true"></div>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="pretitle">Food Waste Rescue Radar / High School Track</p>
+          <h1>Reliable AI for the cafeteria’s shortest rescue window.</h1>
           <p>
-            Scroll through the rescue clock. Each step is a real decision point a cafeteria manager can act on
-            without sensors, private student data, or a complex district integration.
+            Second Bell predicts unopened milk, whole fruit, and sealed sides before they leave a safe
+            recovery state. The AI recommends. Ms. Rivera approves.
+          </p>
+        </div>
+        <a class="scroll-cue" href="#platform" aria-label="Scroll to explore">
+          <span>Scroll to explore</span>
+          <i aria-hidden="true"></i>
+        </a>
+      </section>
+
+      <section class="logo-strip" aria-label="Second Bell signal chain">
+        <div class="marquee">
+          <span>menu signals</span>
+          <span>attendance shift</span>
+          <span>ghost risk</span>
+          <span>cold-chain gate</span>
+          <span>human approval</span>
+          <span>impact receipt</span>
+          <span>menu signals</span>
+          <span>attendance shift</span>
+          <span>ghost risk</span>
+          <span>cold-chain gate</span>
+          <span>human approval</span>
+          <span>impact receipt</span>
+        </div>
+      </section>
+
+      <section id="platform" class="section intro">
+        <div class="section-head reveal">
+          <p class="eyebrow">Applications</p>
+          <h2>AI systems that actually fit a school lunch period.</h2>
+        </div>
+        <div class="intro-grid">
+          <article class="intro-card reveal">
+            <span>01</span>
+            <h3>Predict the ghost component.</h3>
+            <p>Detect items that were served but never wanted: unopened milk, apples, fruit cups, yogurt, carrots, and sealed sides.</p>
+          </article>
+          <article class="intro-card reveal">
+            <span>02</span>
+            <h3>Find the safe window.</h3>
+            <p>Connect line behavior, lunch period, weather, events, cooler capacity, and after-school demand to a timed action.</p>
+          </article>
+          <article class="intro-card reveal">
+            <span>03</span>
+            <h3>Keep humans in control.</h3>
+            <p>Food safety, packaging, temperature, and policy approval stay with cafeteria staff before any recovery is counted.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="image-band">
+        <div class="band-media" aria-hidden="true"></div>
+        <div class="band-copy reveal">
+          <p class="eyebrow">Data</p>
+          <h2>The model turns ordinary cafeteria counts into operational timing.</h2>
+          <p>
+            No student names. No cameras. No private records. Just aggregate cafeteria patterns and a narrow
+            question: what will return unopened, and what can still be safely rescued?
+          </p>
+        </div>
+      </section>
+
+      <section id="clock" class="section clock-section">
+        <div class="clock-copy reveal">
+          <p class="eyebrow">Rescue Clock</p>
+          <h2>Rainy Tuesday. Pasta lunch. Juniors away.</h2>
+          <p>
+            The strongest demo scenario is a specific one. Second Bell sees second-lunch milk risk, fruit
+            placement risk, and after-school demand before tray returns become a disposal problem.
           </p>
         </div>
 
-        <div class="clock-demo reveal">
-          <div class="clock-tabs" role="tablist" aria-label="Rescue clock steps">
-            <button class="clock-tab active" data-step="0" role="tab" aria-selected="true">7:30</button>
-            <button class="clock-tab" data-step="1" role="tab" aria-selected="false">10:55</button>
-            <button class="clock-tab" data-step="2" role="tab" aria-selected="false">12:12</button>
-            <button class="clock-tab" data-step="3" role="tab" aria-selected="false">12:35</button>
+        <div class="clock-system reveal" aria-label="Animated rescue clock">
+          <div class="clock-top">
+            <span>12:12 PM</span>
+            <span>Second lunch alert</span>
           </div>
-          <div class="clock-panels">
-            <article class="clock-panel active">
-              <span>Plan</span>
-              <h3>Ms. Rivera enters today's setup.</h3>
-              <p>Pasta bowl, rainy weather, field trip, 910 expected students, monitor available, 90-item cooler.</p>
-            </article>
-            <article class="clock-panel">
-              <span>Prevent</span>
-              <h3>Stage cold items in waves.</h3>
-              <p>The model warns that full exposure before actual demand is visible increases unopened returns.</p>
-            </article>
-            <article class="clock-panel">
-              <span>Rescue</span>
-              <h3>Deploy the share-table cooler.</h3>
-              <p>White milk and fruit spike in second lunch. The action card opens the safe collection window.</p>
-            </article>
-            <article class="clock-panel">
-              <span>Route</span>
-              <h3>Match sealed surplus to after-school demand.</h3>
-              <p>Eligible fruit cups go to tutoring and track only after manager approval and policy checks.</p>
-            </article>
+          <div class="orbital">
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="orbit-center">
+              <strong>64-91</strong>
+              <span>unopened cartons</span>
+            </div>
+          </div>
+          <div class="decision-stack">
+            <div class="decision active">
+              <small>Primary action</small>
+              <strong>Deploy monitored cooler before tray-return spike.</strong>
+            </div>
+            <div class="decision">
+              <small>Prevention</small>
+              <strong>Stage cold items in two waves.</strong>
+            </div>
+            <div class="decision">
+              <small>Guardrail</small>
+              <strong>Manager approval required before routing.</strong>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="impact" class="section impact">
-        <div class="section-kicker reveal">Impact receipt</div>
-        <div class="impact-wrap">
-          <div class="receipt reveal">
-            <div class="receipt-head">
-              <span>Second Bell receipt</span>
-              <strong>Approved plan</strong>
-            </div>
-            <div class="metric-line">
-              <span>Items recovered</span>
-              <strong data-count="179">0</strong>
-            </div>
-            <div class="metric-line">
-              <span>Food diverted</span>
-              <strong data-count="31">0</strong>
-            </div>
-            <div class="metric-line">
-              <span>CO2e avoided</span>
-              <strong data-count="52">0</strong>
-            </div>
-            <div class="metric-line">
-              <span>Human approval</span>
-              <strong>Required</strong>
-            </div>
-          </div>
-          <div class="impact-copy reveal">
-            <h2>The AI recommends. The human approves.</h2>
-            <p>
-              The system never decides that food is safe by itself. Cold items require sealed packaging, a monitored
-              cooler, a 41 F-or-colder gate, and manager approval before the receipt counts the recovery.
-            </p>
-            <a class="button primary" href="DEVPOST_COPY.md">Open Devpost copy</a>
+      <section class="industry-panel">
+        <div class="industry-copy reveal">
+          <p class="eyebrow">Food waste track</p>
+          <h2>Served-but-unwanted food is a hidden school climate lever.</h2>
+        </div>
+        <div class="industry-list reveal" aria-label="Second Bell focus areas">
+          <button class="industry-item active" data-panel="0">Artificial Intelligence</button>
+          <button class="industry-item" data-panel="1">Food Rescue</button>
+          <button class="industry-item" data-panel="2">Cold Chain</button>
+          <button class="industry-item" data-panel="3">After School</button>
+          <button class="industry-item" data-panel="4">Responsible AI</button>
+        </div>
+        <div class="industry-stage reveal">
+          <article class="industry-card active">
+            <h3>Pattern detection plus recommendations.</h3>
+            <p>Classifier, quantile forecasts, demand matching, anomaly detection, and a rule-constrained action scorer.</p>
+          </article>
+          <article class="industry-card">
+            <h3>Keep food feeding students.</h3>
+            <p>Second Bell prioritizes prevention, share-table recovery, and same-day approved routing before disposal.</p>
+          </article>
+          <article class="industry-card">
+            <h3>Cold items need stricter gates.</h3>
+            <p>Sealed packaging, monitored cooler capacity, and temperature assumptions are visible in every counted action.</p>
+          </article>
+          <article class="industry-card">
+            <h3>Surplus meets real same-day demand.</h3>
+            <p>Tutoring, robotics, band, and track can use eligible sealed items without outside donation logistics.</p>
+          </article>
+          <article class="industry-card">
+            <h3>The AI does not approve food safety.</h3>
+            <p>Human approval is not decoration. It is the control that keeps the system realistic and responsible.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="proof" class="section proof">
+        <div class="section-head reveal">
+          <p class="eyebrow">Impact</p>
+          <h2>From forecast to receipt.</h2>
+        </div>
+        <div class="proof-grid">
+          <article class="proof-card reveal">
+            <span data-count="179">0</span>
+            <p>items recovered in the demo receipt</p>
+          </article>
+          <article class="proof-card reveal">
+            <span data-count="31">0</span>
+            <p>kg of food diverted from disposal</p>
+          </article>
+          <article class="proof-card reveal">
+            <span data-count="52">0</span>
+            <p>kg CO2e avoided as an estimate, not a false-precision claim</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="submit" class="closing media-section">
+        <div class="closing-media" aria-hidden="true"></div>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="closing-copy reveal">
+          <p class="pretitle">Submission-ready prototype</p>
+          <h2>Built for Challenge 2: local, measurable, AI-driven, and human-approved.</h2>
+          <div class="closing-actions">
+            <a class="solid-link large" href="DEVPOST_COPY.md">Open Devpost copy</a>
+            <a class="quiet-link large" href="README.md">Read the build notes</a>
           </div>
         </div>
       </section>

@@ -1,29 +1,24 @@
 const root = document.documentElement;
-const progress = document.querySelector(".progress");
 const reveals = document.querySelectorAll(".reveal");
-const countEls = document.querySelectorAll("[data-count]");
-const tabs = document.querySelectorAll(".clock-tab");
-const panels = document.querySelectorAll(".clock-panel");
-
-let latestScroll = 0;
-let ticking = false;
+const counters = document.querySelectorAll("[data-count]");
+const industryButtons = document.querySelectorAll(".industry-item");
+const industryCards = document.querySelectorAll(".industry-card");
 const counted = new WeakSet();
 
-function updateScrollState() {
-  const max = Math.max(1, document.body.scrollHeight - window.innerHeight);
+let ticking = false;
+let latestScroll = 0;
+
+function updateScrollVars() {
+  const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
   const ratio = Math.min(1, Math.max(0, latestScroll / max));
-  root.style.setProperty("--progress", ratio.toFixed(4));
-  root.style.setProperty("--scroll", ratio.toFixed(4));
-  if (progress) {
-    progress.style.width = `${ratio * 100}%`;
-  }
+  root.style.setProperty("--progress", ratio.toFixed(5));
   ticking = false;
 }
 
 function requestScrollUpdate() {
-  latestScroll = window.scrollY || window.pageYOffset;
+  latestScroll = window.scrollY || window.pageYOffset || 0;
   if (!ticking) {
-    window.requestAnimationFrame(updateScrollState);
+    window.requestAnimationFrame(updateScrollVars);
     ticking = true;
   }
 }
@@ -37,68 +32,64 @@ const revealObserver = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
+  { threshold: 0.14, rootMargin: "0px 0px -10% 0px" }
 );
 
-reveals.forEach((el) => revealObserver.observe(el));
+reveals.forEach((element) => revealObserver.observe(element));
 
-function animateCount(el) {
-  if (counted.has(el)) return;
-  counted.add(el);
-  const target = Number(el.dataset.count || 0);
+function animateCounter(element) {
+  if (counted.has(element)) return;
+  counted.add(element);
+  const target = Number(element.dataset.count || 0);
   const start = performance.now();
   const duration = 1200;
 
   function frame(now) {
-    const progressRatio = Math.min(1, (now - start) / duration);
-    const eased = 1 - Math.pow(1 - progressRatio, 3);
-    el.textContent = String(Math.round(target * eased));
-    if (progressRatio < 1) {
-      window.requestAnimationFrame(frame);
-    }
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    element.textContent = String(Math.round(target * eased));
+    if (t < 1) window.requestAnimationFrame(frame);
   }
 
   window.requestAnimationFrame(frame);
 }
 
-const countObserver = new IntersectionObserver(
+const counterObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        animateCount(entry.target);
-      }
+      if (entry.isIntersecting) animateCounter(entry.target);
     });
   },
-  { threshold: 0.75 }
+  { threshold: 0.55 }
 );
 
-countEls.forEach((el) => countObserver.observe(el));
+counters.forEach((element) => counterObserver.observe(element));
 
-function activateStep(index) {
-  tabs.forEach((tab, i) => {
-    const selected = i === index;
-    tab.classList.toggle("active", selected);
-    tab.setAttribute("aria-selected", selected ? "true" : "false");
+function activateIndustry(index) {
+  industryButtons.forEach((button, buttonIndex) => {
+    button.classList.toggle("active", buttonIndex === index);
   });
-  panels.forEach((panel, i) => {
-    panel.classList.toggle("active", i === index);
+  industryCards.forEach((card, cardIndex) => {
+    card.classList.toggle("active", cardIndex === index);
   });
 }
 
-tabs.forEach((tab, index) => {
-  tab.addEventListener("click", () => activateStep(index));
+industryButtons.forEach((button, index) => {
+  button.addEventListener("mouseenter", () => activateIndustry(index));
+  button.addEventListener("focus", () => activateIndustry(index));
+  button.addEventListener("click", () => activateIndustry(index));
 });
 
-let autoStep = 0;
+let autoIndustry = 0;
 window.setInterval(() => {
-  const demo = document.querySelector(".clock-demo");
-  if (!demo) return;
-  const rect = demo.getBoundingClientRect();
-  const visible = rect.top < window.innerHeight * 0.8 && rect.bottom > window.innerHeight * 0.2;
-  if (!visible || document.hidden) return;
-  autoStep = (autoStep + 1) % panels.length;
-  activateStep(autoStep);
-}, 4200);
+  const panel = document.querySelector(".industry-panel");
+  if (!panel || document.hidden) return;
+  const rect = panel.getBoundingClientRect();
+  const visible = rect.top < window.innerHeight * 0.72 && rect.bottom > window.innerHeight * 0.28;
+  if (!visible) return;
+  autoIndustry = (autoIndustry + 1) % industryCards.length;
+  activateIndustry(autoIndustry);
+}, 3200);
 
 window.addEventListener("scroll", requestScrollUpdate, { passive: true });
 window.addEventListener("resize", requestScrollUpdate);
