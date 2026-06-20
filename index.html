@@ -30,7 +30,6 @@
         <a href="#platform">Platform</a>
         <a href="#architecture">Architecture</a>
         <a href="#inference">Inference</a>
-        <a href="#tech-stack">Tech</a>
         <a href="#clock">Clock</a>
       </nav>
       <div class="header-actions">
@@ -266,102 +265,6 @@
         </div>
       </section>
 
-      <section id="tech-stack" class="tech-stack section" aria-label="Second Bell technical stack">
-        <div class="tech-copy reveal">
-          <p class="eyebrow">Tech stack</p>
-          <h2>The prototype is a real model pipeline, not a mock dashboard.</h2>
-          <p>
-            This view maps the code path behind Second Bell: synthetic cafeteria rows become feature
-            matrices, scikit-learn models score risk and uncertainty, joblib artifacts preserve the trained
-            stack, and a safety compiler turns predictions into approved action cards.
-          </p>
-        </div>
-
-        <div class="tech-workbench reveal">
-          <div class="tech-scene-wrap">
-            <canvas id="tech-stack-canvas" aria-label="Interactive Three.js AI architecture visualization"></canvas>
-            <div class="tech-scene-fallback" aria-hidden="true">
-              <span>feature matrix</span>
-              <span>model heads</span>
-              <span>safety compiler</span>
-              <span>action cards</span>
-            </div>
-            <div class="tech-scene-labels" aria-hidden="true">
-              <span class="tech-scene-label active" data-tech-label="0">22-feature input vector</span>
-              <span class="tech-scene-label" data-tech-label="1">classifier + regressors + anomaly head</span>
-              <span class="tech-scene-label" data-tech-label="2">cold-chain and approval gates</span>
-              <span class="tech-scene-label" data-tech-label="3">approved action receipt</span>
-            </div>
-          </div>
-
-          <div class="tech-control-panel">
-            <div class="tech-panel-head">
-              <span>Interactive architecture matrix</span>
-              <strong data-tech-title>Feature Matrix</strong>
-            </div>
-            <div class="tech-buttons" role="tablist" aria-label="Technical stack layers">
-              <button class="tech-button active" type="button" data-tech-step="0" role="tab" aria-selected="true">
-                <span>01</span>
-                <strong>Feature matrix</strong>
-              </button>
-              <button class="tech-button" type="button" data-tech-step="1" role="tab" aria-selected="false">
-                <span>02</span>
-                <strong>Model heads</strong>
-              </button>
-              <button class="tech-button" type="button" data-tech-step="2" role="tab" aria-selected="false">
-                <span>03</span>
-                <strong>Policy compiler</strong>
-              </button>
-              <button class="tech-button" type="button" data-tech-step="3" role="tab" aria-selected="false">
-                <span>04</span>
-                <strong>Product layer</strong>
-              </button>
-            </div>
-            <p class="tech-detail" data-tech-detail>
-              pandas and NumPy shape one cafeteria item-period into a 22-column feature vector. The animation
-              shows row vectors flowing through scaled numeric signals and one-hot menu/event categories.
-            </p>
-            <dl class="tech-metrics" aria-label="Selected technical metrics">
-              <div>
-                <dt data-tech-metric-a>22</dt>
-                <dd data-tech-metric-label-a>features</dd>
-              </div>
-              <div>
-                <dt data-tech-metric-b>10.6k</dt>
-                <dd data-tech-metric-label-b>training rows</dd>
-              </div>
-              <div>
-                <dt data-tech-metric-c>540</dt>
-                <dd data-tech-metric-label-c>school days</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-
-        <div class="tech-stack-grid reveal" aria-label="Actual libraries used by Second Bell">
-          <article class="tech-stack-card">
-            <span>Frontend</span>
-            <h3>HTML, CSS, JavaScript, Three.js</h3>
-            <p>Static GitHub Pages shell, scroll-driven interactions, and a live WebGL architecture scene.</p>
-          </article>
-          <article class="tech-stack-card">
-            <span>App</span>
-            <h3>Streamlit and Plotly</h3>
-            <p>Interactive cafeteria demo, action cards, approval toggles, and impact receipt visualizations.</p>
-          </article>
-          <article class="tech-stack-card">
-            <span>Data</span>
-            <h3>pandas and NumPy</h3>
-            <p>Synthetic school-day simulator, feature matrix construction, and scenario-level signal shaping.</p>
-          </article>
-          <article class="tech-stack-card">
-            <span>AI</span>
-            <h3>scikit-learn and joblib</h3>
-            <p>Classifier, quantile regressors, demand model, anomaly detector, model manifest, and artifact validation.</p>
-          </article>
-        </div>
-      </section>
-
       <section id="clock" class="section clock-section">
         <div class="clock-copy reveal">
           <p class="eyebrow">Rescue Clock</p>
@@ -479,7 +382,5 @@
     </footer>
 
     <script src="assets/site.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
-    <script src="assets/tech-stack.js"></script>
   </body>
 </html>
