@@ -28,9 +28,9 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#platform">Platform</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#inference">Inference</a>
         <a href="#clock">Clock</a>
-        <a href="#proof">Proof</a>
-        <a href="#submit">Submit</a>
       </nav>
       <div class="header-actions">
         <a class="quiet-link" href="submission.html">Devpost</a>
@@ -47,7 +47,7 @@
           <h1>Reliable AI for the cafeteria’s shortest rescue window.</h1>
           <p>
             Second Bell predicts unopened milk, whole fruit, and sealed sides before they leave a safe
-            recovery state. The AI recommends. Ms. Rivera approves.
+            recovery state using a model ensemble, safety compiler, and human approval loop.
           </p>
         </div>
         <a class="scroll-cue" href="#platform" aria-label="Scroll to explore">
@@ -114,24 +114,24 @@
           <div class="architecture-copy">
             <p class="eyebrow">Architecture</p>
             <div class="arch-step active" data-arch-step="0">
-              <span>01 / Signals</span>
-              <h2>Raw cafeteria context becomes a live operating picture.</h2>
-              <p>Menu, weather, events, attendance, line placement, cooler capacity, and after-school demand enter the system as aggregate signals.</p>
+              <span>01 / Feature Intake</span>
+              <h2>Aggregate cafeteria signals become a structured feature vector.</h2>
+              <p>Twenty-two features describe the operating day: menu, period, attendance, weather, event, line placement, cooler capacity, monitor status, and after-school demand.</p>
             </div>
             <div class="arch-step" data-arch-step="1">
-              <span>02 / Models</span>
-              <h2>The AI separates normal lunch noise from ghost-component risk.</h2>
-              <p>Classifier, quantile forecasters, demand matcher, and anomaly detector turn routine counts into explainable predictions.</p>
+              <span>02 / Prediction Heads</span>
+              <h2>Specialized models score the same day from different angles.</h2>
+              <p>A risk classifier, quantile return forecasters, demand regressor, and anomaly detector run together so the demo shows uncertainty instead of one brittle number.</p>
             </div>
             <div class="arch-step" data-arch-step="2">
-              <span>03 / Gates</span>
-              <h2>Recommendations pass through food-safety constraints.</h2>
-              <p>The state machine blocks unsafe reuse, flags cold-chain requirements, and keeps approval with the cafeteria manager.</p>
+              <span>03 / Safety Compiler</span>
+              <h2>Predictions are compiled into allowed and blocked actions.</h2>
+              <p>The rescue-window state machine checks packaging, monitor status, cooler capacity, cold-chain assumptions, and policy approval before any action can count.</p>
             </div>
             <div class="arch-step" data-arch-step="3">
-              <span>04 / Action</span>
-              <h2>The output is not a chart. It is a timed decision.</h2>
-              <p>Deploy the cooler, stage in waves, move line placement, route sealed surplus, or block the action and log why.</p>
+              <span>04 / Human Loop</span>
+              <h2>The output is not a chart. It is an approval-ready decision.</h2>
+              <p>Second Bell explains the action, deadline, safety gate, confidence range, labor minutes, and impact receipt. Ms. Rivera still approves or blocks it.</p>
             </div>
           </div>
 
@@ -141,7 +141,7 @@
             <div class="arch-beam beam-b"></div>
             <div class="arch-core">
               <span>Second Bell</span>
-              <strong>Rescue Clock</strong>
+              <strong>Inference Core</strong>
             </div>
             <div class="arch-lane lane-input">
               <div class="lane-title">Inputs</div>
@@ -151,24 +151,113 @@
               <div class="data-chip chip-4">cooler 90</div>
             </div>
             <div class="arch-lane lane-model">
-              <div class="lane-title">AI Layer</div>
+              <div class="lane-title">Model Layer</div>
               <div class="model-node node-risk">Risk classifier</div>
-              <div class="model-node node-quantile">Quantile forecast</div>
+              <div class="model-node node-quantile">Q10 / Q50 / Q90</div>
               <div class="model-node node-anomaly">Anomaly detector</div>
               <div class="model-node node-demand">Demand matcher</div>
             </div>
             <div class="arch-lane lane-output">
               <div class="lane-title">Action</div>
               <div class="action-slab slab-1">Deploy cooler</div>
-              <div class="action-slab slab-2">Stage in waves</div>
-              <div class="action-slab slab-3">Manager approves</div>
+              <div class="action-slab slab-2">Compile gates</div>
+              <div class="action-slab slab-3">Approval receipt</div>
             </div>
+            <div class="arch-stat stat-a"><span>training rows</span><strong>10,688</strong></div>
+            <div class="arch-stat stat-b"><span>features</span><strong>22</strong></div>
+            <div class="arch-stat stat-c"><span>school days</span><strong>540</strong></div>
             <svg class="arch-lines" viewBox="0 0 900 620" preserveAspectRatio="none">
               <path class="line line-one" d="M110 170 C250 160 270 310 420 310" />
               <path class="line line-two" d="M120 430 C270 420 280 320 420 320" />
               <path class="line line-three" d="M500 310 C650 290 650 150 792 145" />
               <path class="line line-four" d="M500 330 C650 350 650 480 792 486" />
             </svg>
+          </div>
+        </div>
+      </section>
+
+      <section id="inference" class="inference-array" aria-label="Second Bell production inference array">
+        <div class="array-sticky">
+          <div class="array-copy">
+            <p class="eyebrow">Production inference array</p>
+            <h2>Built like a real AI decision system.</h2>
+            <p>
+              The demo follows the actual pipeline: encode the cafeteria day, run model heads, compile
+              safety constraints, then render a manager-approved action receipt.
+            </p>
+            <div class="array-steps" aria-label="Inference stages">
+              <div class="array-step active" data-array-step="0">
+                <span>01</span>
+                <strong>Feature encoder</strong>
+                <p>One row per item-period with categorical encoding and scaled numeric signals.</p>
+              </div>
+              <div class="array-step" data-array-step="1">
+                <span>02</span>
+                <strong>Model heads</strong>
+                <p>Risk, return interval, demand, and anomaly models run in parallel.</p>
+              </div>
+              <div class="array-step" data-array-step="2">
+                <span>03</span>
+                <strong>Policy compiler</strong>
+                <p>Cold-chain, packaging, monitor, capacity, and approval gates filter actions.</p>
+              </div>
+              <div class="array-step" data-array-step="3">
+                <span>04</span>
+                <strong>Live demo receipt</strong>
+                <p>Only approved primary marginal actions count toward recovery totals.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="array-stage" aria-hidden="true">
+            <div class="array-scan"></div>
+            <div class="array-grid-bg"></div>
+            <div class="array-node node-a"></div>
+            <div class="array-node node-b"></div>
+            <div class="array-node node-c"></div>
+
+            <div class="array-pipeline">
+              <div class="pipeline-col col-intake">
+                <span>Signal intake</span>
+                <strong>Rainy Tuesday</strong>
+                <small>pasta bowl / juniors away / 175 after school</small>
+              </div>
+              <div class="pipeline-col col-encode">
+                <span>Feature encoder</span>
+                <strong>22 features</strong>
+                <small>categorical one-hot + numeric scaler</small>
+              </div>
+              <div class="pipeline-col col-heads">
+                <span>Prediction heads</span>
+                <strong>4 model families</strong>
+                <small>risk / quantiles / demand / anomaly</small>
+              </div>
+              <div class="pipeline-col col-policy">
+                <span>Policy compiler</span>
+                <strong>7 gates</strong>
+                <small>sealed + monitored + cold-chain + capacity</small>
+              </div>
+            </div>
+
+            <div class="model-rack">
+              <div class="rack-row row-risk"><span>RandomForestClassifier</span><strong>ghost risk 0.82</strong></div>
+              <div class="rack-row row-q10"><span>Quantile GBR q10</span><strong>64 cartons</strong></div>
+              <div class="rack-row row-q50"><span>Quantile GBR q50</span><strong>77 cartons</strong></div>
+              <div class="rack-row row-q90"><span>Quantile GBR q90</span><strong>91 cartons</strong></div>
+              <div class="rack-row row-demand"><span>RandomForestRegressor</span><strong>175 snack demand</strong></div>
+              <div class="rack-row row-anomaly"><span>IsolationForest</span><strong>manager review</strong></div>
+            </div>
+
+            <div class="receipt-panel">
+              <div class="receipt-top">
+                <span>Action receipt</span>
+                <strong>approved plan</strong>
+              </div>
+              <div class="receipt-line"><span>deploy-by</span><strong>12:12 PM</strong></div>
+              <div class="receipt-line"><span>safe recovery</span><strong>sealed + monitored</strong></div>
+              <div class="receipt-line"><span>counted impact</span><strong>179 items</strong></div>
+              <div class="receipt-line"><span>blocked</span><strong>unsafe alternatives</strong></div>
+            </div>
           </div>
         </div>
       </section>

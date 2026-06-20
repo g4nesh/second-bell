@@ -59,13 +59,15 @@ The novelty is the combination of cafeteria line behavior, meal-component select
 
 ### Processing
 
-Second Bell trains on a synthetic cafeteria history of 540 post-break school days. Each row represents one food item in one lunch period. The model stack includes:
+Second Bell trains on a synthetic cafeteria history of 540 post-break school days and 10,688 item-period rows. Each row represents one food item in one lunch period. The production inference array is:
 
-1. RandomForestClassifier for high ghost-component risk.
-2. Quantile GradientBoostingRegressor models for low, median, and high unopened-return forecasts.
-3. RandomForestRegressor for after-school snack demand.
-4. IsolationForest for unusual operating days.
-5. A rule-constrained rescue-window state machine that blocks unsafe or unmonitored actions.
+1. Feature encoder: one-hot categorical signals plus scaled numeric cafeteria signals.
+2. RandomForestClassifier: high ghost-component risk.
+3. Quantile GradientBoostingRegressor heads: Q10, Q50, and Q90 unopened-return forecasts.
+4. RandomForestRegressor: same-day after-school snack demand.
+5. IsolationForest: unusual operating day review flag.
+6. Rule-constrained safety compiler: blocks unsafe or unmonitored actions.
+7. Impact receipt: counts only approved primary marginal actions.
 
 The recommender scores possible actions using expected recovery, CO2e avoided, food value protected, labor, stockout risk, safety risk, and confidence. The final impact receipt counts only one approved primary marginal action per item/lunch, so alternatives do not inflate the numbers.
 

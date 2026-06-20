@@ -91,23 +91,58 @@
 
       <section id="architecture-notes" class="submission-section">
         <p class="eyebrow">AI architecture</p>
-        <h2>Inputs become forecasts, gates, and action cards.</h2>
+        <h2>Inputs become a production inference array.</h2>
         <div class="process-list">
           <article>
-            <strong>Inputs</strong>
-            <p>Menu, attendance, weather, events, lunch period, line setup, cooler capacity, monitor status, and after-school snack demand.</p>
+            <strong>Feature encoder</strong>
+            <p>Twenty-two aggregate cafeteria features are encoded from menu, period, attendance, weather, event, line setup, cooler capacity, and demand.</p>
           </article>
           <article>
-            <strong>Models</strong>
-            <p>RandomForestClassifier, quantile GradientBoostingRegressor models, RandomForestRegressor, and IsolationForest anomaly detection.</p>
+            <strong>Prediction heads</strong>
+            <p>RandomForestClassifier scores ghost risk; quantile GradientBoostingRegressor models produce Q10/Q50/Q90 return bands.</p>
           </article>
           <article>
-            <strong>State machine</strong>
-            <p>Blocks unsafe reuse, requires cold-chain conditions, and keeps policy approval with cafeteria staff.</p>
+            <strong>Demand + anomaly</strong>
+            <p>RandomForestRegressor estimates same-day after-school demand; IsolationForest flags unusual operating days for manager review.</p>
           </article>
           <article>
-            <strong>Receipt</strong>
-            <p>Counts only approved primary marginal actions so totals cannot exceed recoverable returns, cooler capacity, or same-day demand.</p>
+            <strong>Safety compiler</strong>
+            <p>A state machine blocks unsafe reuse, requires cold-chain conditions, and keeps policy approval with cafeteria staff.</p>
+          </article>
+          <article>
+            <strong>Action scorer</strong>
+            <p>Recommendations balance expected recovery, CO2e, food value, labor minutes, stockout risk, confidence, and safety gates.</p>
+          </article>
+          <article>
+            <strong>Impact receipt</strong>
+            <p>Only approved primary marginal actions count, so totals cannot exceed recoverable returns, cooler capacity, or same-day demand.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="submission-section">
+        <p class="eyebrow">Demo scenario</p>
+        <h2>Rainy Tuesday runs through the whole stack.</h2>
+        <p>
+          The production demo uses a pasta lunch, juniors away on a field trip, a monitored 90-item
+          cooler, and 175 after-school snack requests. The site animation mirrors the real workflow:
+          feature vector -> model heads -> safety compiler -> manager-approved receipt.
+        </p>
+        <div class="submission-grid">
+          <article>
+            <span>Training</span>
+            <h3>10,688 rows</h3>
+            <p>Synthetic item-period cafeteria history across 540 school days.</p>
+          </article>
+          <article>
+            <span>Inference</span>
+            <h3>Q10 / Q50 / Q90</h3>
+            <p>Prediction intervals show uncertainty instead of pretending one number is exact.</p>
+          </article>
+          <article>
+            <span>Control</span>
+            <h3>Human approval</h3>
+            <p>The AI recommends actions; cafeteria staff approve food-safety and policy decisions.</p>
           </article>
         </div>
       </section>

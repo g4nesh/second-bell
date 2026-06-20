@@ -19,11 +19,12 @@ lunch-line behavior -> unwanted sealed item -> unopened return -> cold-chain tim
 
 - Synthetic data generation for 540 post-break synthetic school days.
 - Pattern detection for menu, weather, attendance, event, lunch-period, and line-position effects.
+- Feature encoder for 22 aggregate item-period cafeteria signals.
 - RandomForestClassifier for high ghost-component risk.
-- Quantile GradientBoostingRegressor for unopened-return prediction intervals.
+- Quantile GradientBoostingRegressor heads for Q10, Q50, and Q90 unopened-return intervals.
 - RandomForestRegressor for after-school snack demand.
 - IsolationForest anomaly detector for unusual operating days.
-- Rule-constrained recommendation engine with food-safety guardrails.
+- Rule-constrained safety compiler and recommendation engine with food-safety guardrails.
 - Capped impact receipt that counts only approved primary actions.
 
 ## Demo Flow

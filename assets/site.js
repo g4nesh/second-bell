@@ -6,6 +6,9 @@ const industryCards = document.querySelectorAll(".industry-card");
 const architecture = document.querySelector(".architecture");
 const architectureStage = document.querySelector(".architecture-stage");
 const architectureSteps = document.querySelectorAll(".arch-step");
+const inference = document.querySelector(".inference-array");
+const arrayStage = document.querySelector(".array-stage");
+const arraySteps = document.querySelectorAll(".array-step");
 const counted = new WeakSet();
 
 let ticking = false;
@@ -17,6 +20,7 @@ function updateScrollVars() {
   const ratio = Math.min(1, Math.max(0, latestScroll / max));
   root.style.setProperty("--progress", ratio.toFixed(5));
   updateArchitecture();
+  updateInferenceArray();
   ticking = false;
 }
 
@@ -30,6 +34,20 @@ function updateArchitecture() {
   architectureStage.style.setProperty("--arch-local", local.toFixed(4));
   architectureStage.dataset.phase = String(phase);
   architectureSteps.forEach((step, index) => {
+    step.classList.toggle("active", index === phase);
+  });
+}
+
+function updateInferenceArray() {
+  if (!inference || !arrayStage || !arraySteps.length) return;
+  const rect = inference.getBoundingClientRect();
+  const distance = Math.max(1, rect.height - window.innerHeight);
+  const local = Math.min(1, Math.max(0, -rect.top / distance));
+  const phase = Math.min(arraySteps.length - 1, Math.floor(local * arraySteps.length));
+
+  arrayStage.style.setProperty("--array-local", local.toFixed(4));
+  arrayStage.dataset.phase = String(phase);
+  arraySteps.forEach((step, index) => {
     step.classList.toggle("active", index === phase);
   });
 }
