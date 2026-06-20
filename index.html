@@ -33,8 +33,8 @@
         <a href="#submit">Submit</a>
       </nav>
       <div class="header-actions">
-        <a class="quiet-link" href="DEVPOST_COPY.md">Devpost</a>
-        <a class="solid-link" href="README.md">View build</a>
+        <a class="quiet-link" href="submission.html">Devpost</a>
+        <a class="solid-link" href="submission.html#build">View build</a>
       </div>
     </header>
 
@@ -106,6 +106,70 @@
             No student names. No cameras. No private records. Just aggregate cafeteria patterns and a narrow
             question: what will return unopened, and what can still be safely rescued?
           </p>
+        </div>
+      </section>
+
+      <section id="architecture" class="architecture" aria-label="Second Bell architecture animation">
+        <div class="architecture-sticky">
+          <div class="architecture-copy">
+            <p class="eyebrow">Architecture</p>
+            <div class="arch-step active" data-arch-step="0">
+              <span>01 / Signals</span>
+              <h2>Raw cafeteria context becomes a live operating picture.</h2>
+              <p>Menu, weather, events, attendance, line placement, cooler capacity, and after-school demand enter the system as aggregate signals.</p>
+            </div>
+            <div class="arch-step" data-arch-step="1">
+              <span>02 / Models</span>
+              <h2>The AI separates normal lunch noise from ghost-component risk.</h2>
+              <p>Classifier, quantile forecasters, demand matcher, and anomaly detector turn routine counts into explainable predictions.</p>
+            </div>
+            <div class="arch-step" data-arch-step="2">
+              <span>03 / Gates</span>
+              <h2>Recommendations pass through food-safety constraints.</h2>
+              <p>The state machine blocks unsafe reuse, flags cold-chain requirements, and keeps approval with the cafeteria manager.</p>
+            </div>
+            <div class="arch-step" data-arch-step="3">
+              <span>04 / Action</span>
+              <h2>The output is not a chart. It is a timed decision.</h2>
+              <p>Deploy the cooler, stage in waves, move line placement, route sealed surplus, or block the action and log why.</p>
+            </div>
+          </div>
+
+          <div class="architecture-stage" aria-hidden="true">
+            <div class="arch-grid"></div>
+            <div class="arch-beam beam-a"></div>
+            <div class="arch-beam beam-b"></div>
+            <div class="arch-core">
+              <span>Second Bell</span>
+              <strong>Rescue Clock</strong>
+            </div>
+            <div class="arch-lane lane-input">
+              <div class="lane-title">Inputs</div>
+              <div class="data-chip chip-1">menu</div>
+              <div class="data-chip chip-2">weather</div>
+              <div class="data-chip chip-3">field trip</div>
+              <div class="data-chip chip-4">cooler 90</div>
+            </div>
+            <div class="arch-lane lane-model">
+              <div class="lane-title">AI Layer</div>
+              <div class="model-node node-risk">Risk classifier</div>
+              <div class="model-node node-quantile">Quantile forecast</div>
+              <div class="model-node node-anomaly">Anomaly detector</div>
+              <div class="model-node node-demand">Demand matcher</div>
+            </div>
+            <div class="arch-lane lane-output">
+              <div class="lane-title">Action</div>
+              <div class="action-slab slab-1">Deploy cooler</div>
+              <div class="action-slab slab-2">Stage in waves</div>
+              <div class="action-slab slab-3">Manager approves</div>
+            </div>
+            <svg class="arch-lines" viewBox="0 0 900 620" preserveAspectRatio="none">
+              <path class="line line-one" d="M110 170 C250 160 270 310 420 310" />
+              <path class="line line-two" d="M120 430 C270 420 280 320 420 320" />
+              <path class="line line-three" d="M500 310 C650 290 650 150 792 145" />
+              <path class="line line-four" d="M500 330 C650 350 650 480 792 486" />
+            </svg>
+          </div>
         </div>
       </section>
 
@@ -213,8 +277,8 @@
           <p class="pretitle">Submission-ready prototype</p>
           <h2>Built for Challenge 2: local, measurable, AI-driven, and human-approved.</h2>
           <div class="closing-actions">
-            <a class="solid-link large" href="DEVPOST_COPY.md">Open Devpost copy</a>
-            <a class="quiet-link large" href="README.md">Read the build notes</a>
+            <a class="solid-link large" href="submission.html">Open Devpost page</a>
+            <a class="quiet-link large" href="submission.html#build">Read the build notes</a>
           </div>
         </div>
       </section>

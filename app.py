@@ -5,8 +5,10 @@ from pathlib import Path
 import sys
 
 import joblib
+import numpy as np
 import pandas as pd
 import plotly.express as px
+import sklearn
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parent
@@ -59,6 +61,15 @@ def _load_artifacts() -> dict:
     }
 
 
+def _runtime_package_versions() -> dict:
+    return {
+        "joblib": joblib.__version__,
+        "numpy": np.__version__,
+        "pandas": pd.__version__,
+        "scikit_learn": sklearn.__version__,
+    }
+
+
 def _manifest_is_current(row_count: int) -> bool:
     if not MANIFEST_PATH.exists():
         return False
@@ -69,6 +80,7 @@ def _manifest_is_current(row_count: int) -> bool:
     return (
         manifest.get("schema_version") == 1
         and manifest.get("features") == FEATURES
+        and manifest.get("package_versions") == _runtime_package_versions()
         and int(manifest.get("training_rows", -1)) == int(row_count)
         and all((MODEL_DIR / name).exists() for name in MODEL_FILES)
     )
@@ -213,7 +225,7 @@ setup = pd.DataFrame(
     ],
     columns=["Input", "Value"],
 )
-st.dataframe(setup, width="stretch", hide_index=True)
+st.dataframe(setup, use_container_width=True, hide_index=True)
 
 st.subheader("2. Ghost risk forecast")
 col1, col2, col3, col4 = st.columns(4)
@@ -235,7 +247,7 @@ with left:
         text_auto=True,
     )
     fig.update_layout(margin=dict(l=10, r=10, t=20, b=10))
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig, use_container_width=True)
 
 with right:
     rescue_clock = pd.DataFrame(
@@ -248,7 +260,7 @@ with right:
         ],
         columns=["Time", "Stage", "Decision"],
     )
-    st.dataframe(rescue_clock, width="stretch", hide_index=True)
+    st.dataframe(rescue_clock, use_container_width=True, hide_index=True)
 
 st.subheader("3. Why this is happening")
 show_cols = [
@@ -267,7 +279,7 @@ show_cols = [
 ]
 st.dataframe(
     pred.sort_values("rescue_pressure", ascending=False)[show_cols].head(12),
-    width="stretch",
+    use_container_width=True,
     hide_index=True,
 )
 
@@ -339,7 +351,7 @@ baseline_vs_action = pd.DataFrame(
     ],
     columns=["Metric", "Value", "Judge-facing explanation"],
 )
-st.dataframe(baseline_vs_action, width="stretch", hide_index=True)
+st.dataframe(baseline_vs_action, use_container_width=True, hide_index=True)
 
 with st.expander("Responsible AI and human-in-the-loop design", expanded=True):
     st.markdown(
@@ -379,4 +391,4 @@ with st.expander("Model card, data disclosure, and source grounding"):
     if manifest:
         st.write("**Model manifest:**")
         st.json(manifest)
-    st.dataframe(history.sample(min(12, len(history)), random_state=7), width="stretch", hide_index=True)
+    st.dataframe(history.sample(min(12, len(history)), random_state=7), use_container_width=True, hide_index=True)

@@ -3,16 +3,35 @@ const reveals = document.querySelectorAll(".reveal");
 const counters = document.querySelectorAll("[data-count]");
 const industryButtons = document.querySelectorAll(".industry-item");
 const industryCards = document.querySelectorAll(".industry-card");
+const architecture = document.querySelector(".architecture");
+const architectureStage = document.querySelector(".architecture-stage");
+const architectureSteps = document.querySelectorAll(".arch-step");
 const counted = new WeakSet();
 
 let ticking = false;
 let latestScroll = 0;
+let industryTouched = false;
 
 function updateScrollVars() {
   const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
   const ratio = Math.min(1, Math.max(0, latestScroll / max));
   root.style.setProperty("--progress", ratio.toFixed(5));
+  updateArchitecture();
   ticking = false;
+}
+
+function updateArchitecture() {
+  if (!architecture || !architectureStage || !architectureSteps.length) return;
+  const rect = architecture.getBoundingClientRect();
+  const distance = Math.max(1, rect.height - window.innerHeight);
+  const local = Math.min(1, Math.max(0, -rect.top / distance));
+  const phase = Math.min(architectureSteps.length - 1, Math.floor(local * architectureSteps.length));
+
+  architectureStage.style.setProperty("--arch-local", local.toFixed(4));
+  architectureStage.dataset.phase = String(phase);
+  architectureSteps.forEach((step, index) => {
+    step.classList.toggle("active", index === phase);
+  });
 }
 
 function requestScrollUpdate() {
@@ -75,15 +94,19 @@ function activateIndustry(index) {
 }
 
 industryButtons.forEach((button, index) => {
-  button.addEventListener("mouseenter", () => activateIndustry(index));
-  button.addEventListener("focus", () => activateIndustry(index));
-  button.addEventListener("click", () => activateIndustry(index));
+  const selectPanel = () => {
+    industryTouched = true;
+    activateIndustry(index);
+  };
+  button.addEventListener("mouseenter", selectPanel);
+  button.addEventListener("focus", selectPanel);
+  button.addEventListener("click", selectPanel);
 });
 
 let autoIndustry = 0;
 window.setInterval(() => {
   const panel = document.querySelector(".industry-panel");
-  if (!panel || document.hidden) return;
+  if (!panel || document.hidden || industryTouched) return;
   const rect = panel.getBoundingClientRect();
   const visible = rect.top < window.innerHeight * 0.72 && rect.bottom > window.innerHeight * 0.28;
   if (!visible) return;

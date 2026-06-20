@@ -5,7 +5,9 @@ from pathlib import Path
 import sys
 
 import joblib
+import numpy as np
 import pandas as pd
+import sklearn
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -37,13 +39,26 @@ def ensure_data() -> pd.DataFrame:
     return df
 
 
+def runtime_package_versions() -> dict:
+    return {
+        "joblib": joblib.__version__,
+        "numpy": np.__version__,
+        "pandas": pd.__version__,
+        "scikit_learn": sklearn.__version__,
+    }
+
+
 def load_models() -> dict:
     df = ensure_data()
     should_train = True
     if MANIFEST_PATH.exists() and all((MODEL_DIR / name).exists() for name in MODEL_FILES):
         try:
             manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-            should_train = not (manifest.get("features") == FEATURES and int(manifest.get("training_rows", -1)) == len(df))
+            should_train = not (
+                manifest.get("features") == FEATURES
+                and manifest.get("package_versions") == runtime_package_versions()
+                and int(manifest.get("training_rows", -1)) == len(df)
+            )
         except Exception:
             should_train = True
     if should_train:

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Second Bell submission copy, AI architecture, responsible AI guardrails, and build notes."
+    />
+    <meta name="theme-color" content="#050505" />
+    <title>Second Bell | Submission Notes</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+  </head>
+  <body class="submission-page">
+    <header class="site-header">
+      <a class="brand" href="index.html#top" aria-label="Second Bell home">
+        <span class="brand-glyph" aria-hidden="true"></span>
+        <span>second bell</span>
+      </a>
+      <nav aria-label="Submission navigation">
+        <a href="#description">Description</a>
+        <a href="#architecture-notes">AI</a>
+        <a href="#guardrails">Guardrails</a>
+        <a href="#build">Build</a>
+      </nav>
+      <div class="header-actions">
+        <a class="quiet-link" href="index.html#architecture">Demo</a>
+        <a class="solid-link" href="index.html#submit">Home</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="submission-hero">
+        <p class="pretitle">Devpost-ready submission</p>
+        <h1>Second Bell turns unopened cafeteria returns into timed, human-approved rescue actions.</h1>
+        <p>
+          Track: High School / Challenge 2 / Direction A, Food Waste Rescue Radar. Built around Ms.
+          Rivera, Cedar Grove High, and ghost components: unopened milk, whole fruit, and sealed sides.
+        </p>
+      </section>
+
+      <section class="submission-band" aria-label="Submission summary">
+        <div>
+          <span>Track</span>
+          <strong>High School</strong>
+        </div>
+        <div>
+          <span>Challenge</span>
+          <strong>Make Climate Action Local and Real</strong>
+        </div>
+        <div>
+          <span>Direction</span>
+          <strong>Food Waste Rescue Radar</strong>
+        </div>
+      </section>
+
+      <section id="description" class="submission-section">
+        <p class="eyebrow">Project description</p>
+        <h2>A narrow, recoverable waste mechanism.</h2>
+        <p>
+          Most food-waste tools treat a cafeteria like one big trash stream. Second Bell focuses on
+          unopened school-lunch items that count as served but come back untouched. The system predicts
+          what is likely to return, explains why today is risky, and recommends a timed action before
+          the safe recovery window closes.
+        </p>
+        <div class="submission-grid">
+          <article>
+            <span>01</span>
+            <h3>User</h3>
+            <p>Ms. Rivera, a cafeteria manager working with a student eco-club share-table monitor.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Local setting</h3>
+            <p>Cedar Grove High, a fictional but realistic school with two lunch periods and after-school demand.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Output</h3>
+            <p>Timed action cards, safety gates, approval toggles, and a capped impact receipt.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="architecture-notes" class="submission-section">
+        <p class="eyebrow">AI architecture</p>
+        <h2>Inputs become forecasts, gates, and action cards.</h2>
+        <div class="process-list">
+          <article>
+            <strong>Inputs</strong>
+            <p>Menu, attendance, weather, events, lunch period, line setup, cooler capacity, monitor status, and after-school snack demand.</p>
+          </article>
+          <article>
+            <strong>Models</strong>
+            <p>RandomForestClassifier, quantile GradientBoostingRegressor models, RandomForestRegressor, and IsolationForest anomaly detection.</p>
+          </article>
+          <article>
+            <strong>State machine</strong>
+            <p>Blocks unsafe reuse, requires cold-chain conditions, and keeps policy approval with cafeteria staff.</p>
+          </article>
+          <article>
+            <strong>Receipt</strong>
+            <p>Counts only approved primary marginal actions so totals cannot exceed recoverable returns, cooler capacity, or same-day demand.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="guardrails" class="submission-section">
+        <p class="eyebrow">Responsible AI</p>
+        <h2>The AI recommends. Staff approve.</h2>
+        <p>
+          Second Bell does not decide whether food is safe or policy-approved to redistribute. Cold
+          items require sealed packaging, monitored cooler capacity, and a 41 F-or-colder safety gate.
+          The app uses synthetic data only and does not require student names, IDs, demographics, or
+          individual eating behavior.
+        </p>
+      </section>
+
+      <section id="build" class="submission-section">
+        <p class="eyebrow">Build notes</p>
+        <h2>Working MVP stack.</h2>
+        <div class="submission-grid">
+          <article>
+            <span>Stack</span>
+            <h3>Python + Streamlit</h3>
+            <p>pandas, NumPy, scikit-learn, Plotly, joblib, synthetic data generation, and local model artifacts.</p>
+          </article>
+          <article>
+            <span>Validation</span>
+            <h3>Model safety net</h3>
+            <p>The app validates artifacts at startup and can regenerate data and retrain if metadata is stale.</p>
+          </article>
+          <article>
+            <span>Demo video</span>
+            <h3>3-5 minutes</h3>
+            <p>Cover the user, AI pipeline, app walkthrough, human approval, and responsible AI guardrail.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
