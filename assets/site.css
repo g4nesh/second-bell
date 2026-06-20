@@ -1120,8 +1120,8 @@ h3 {
   min-height: 650px;
   grid-template-columns: minmax(0, 1.35fr) minmax(330px, 0.65fr);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 8px;
   background:
     linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
@@ -1135,8 +1135,9 @@ h3 {
   min-height: 650px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 45% 44%, rgba(183, 217, 255, 0.12), transparent 34%),
-    radial-gradient(circle at 72% 68%, rgba(247, 247, 242, 0.06), transparent 26%),
+    radial-gradient(circle at 44% 48%, rgba(183, 217, 255, 0.1), transparent 32%),
+    radial-gradient(circle at 76% 70%, rgba(229, 193, 90, 0.055), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.035), transparent 38%),
     #070707;
 }
 
@@ -1186,19 +1187,19 @@ h3 {
 
 .tech-scene-label {
   position: absolute;
-  max-width: 210px;
+  max-width: 260px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 8px;
-  background: rgba(5, 5, 5, 0.54);
-  color: rgba(247, 247, 242, 0.62);
-  padding: 10px 12px;
-  font-size: 0.68rem;
+  background: rgba(5, 5, 5, 0.48);
+  color: rgba(247, 247, 242, 0.7);
+  padding: 9px 11px;
+  font-size: 0.64rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   line-height: 1.35;
   text-transform: uppercase;
   backdrop-filter: blur(14px);
-  opacity: 0.42;
+  opacity: 0;
   transform: translateY(8px);
   transition: opacity 300ms var(--ease), transform 300ms var(--ease), background 300ms var(--ease), color 300ms var(--ease);
 }
@@ -1217,12 +1218,12 @@ h3 {
 
 .tech-scene-label:nth-child(2) {
   top: 26px;
-  right: 34%;
+  left: 42%;
 }
 
 .tech-scene-label:nth-child(3) {
   right: 30px;
-  bottom: 118px;
+  bottom: 96px;
 }
 
 .tech-scene-label:nth-child(4) {
@@ -1233,10 +1234,12 @@ h3 {
 .tech-control-panel {
   display: grid;
   align-content: start;
-  gap: 22px;
+  gap: 20px;
   border-left: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(5, 5, 5, 0.72);
-  padding: 26px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035), transparent 38%),
+    rgba(5, 5, 5, 0.58);
+  padding: 28px;
 }
 
 .tech-panel-head {
@@ -1256,7 +1259,7 @@ h3 {
 
 .tech-panel-head strong {
   color: var(--white);
-  font-size: clamp(2rem, 3.2vw, 3.5rem);
+  font-size: clamp(1.85rem, 2.7vw, 3rem);
   font-weight: 500;
   letter-spacing: -0.075em;
   line-height: 0.96;
@@ -1264,33 +1267,35 @@ h3 {
 
 .tech-buttons {
   display: grid;
-  gap: 1px;
-  background: rgba(255, 255, 255, 0.12);
+  gap: 8px;
 }
 
 .tech-button {
   display: grid;
-  grid-template-columns: 34px 1fr;
+  grid-template-columns: 28px 1fr;
   align-items: center;
-  gap: 12px;
-  min-height: 64px;
-  border: 0;
-  background: rgba(247, 247, 242, 0.06);
+  gap: 10px;
+  min-height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(247, 247, 242, 0.045);
   color: rgba(247, 247, 242, 0.64);
-  padding: 0 14px;
+  padding: 0 12px;
   text-align: left;
   cursor: pointer;
-  transition: background 260ms var(--ease), color 260ms var(--ease), transform 260ms var(--ease);
+  transition: border-color 260ms var(--ease), background 260ms var(--ease), color 260ms var(--ease), transform 260ms var(--ease);
 }
 
 .tech-button:hover {
-  background: rgba(247, 247, 242, 0.12);
+  border-color: rgba(247, 247, 242, 0.24);
+  background: rgba(247, 247, 242, 0.08);
 }
 
 .tech-button.active {
+  border-color: rgba(247, 247, 242, 0.9);
   background: rgba(247, 247, 242, 0.92);
   color: var(--ink);
-  transform: translateX(-4px);
+  transform: translateX(-2px);
 }
 
 .tech-button.active span,
@@ -1299,30 +1304,31 @@ h3 {
 }
 
 .tech-button strong {
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 700;
   letter-spacing: -0.04em;
 }
 
 .tech-detail {
-  min-height: 132px;
+  min-height: 122px;
   color: rgba(247, 247, 242, 0.74);
-  font-size: 0.98rem;
-  line-height: 1.58;
+  font-size: 0.94rem;
+  line-height: 1.55;
 }
 
 .tech-metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
+  gap: 8px;
   margin: 0;
-  background: rgba(255, 255, 255, 0.12);
 }
 
 .tech-metrics div {
   min-width: 0;
-  background: rgba(247, 247, 242, 0.07);
-  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(247, 247, 242, 0.055);
+  padding: 12px;
 }
 
 .tech-metrics dt,
@@ -1332,7 +1338,7 @@ h3 {
 
 .tech-metrics dt {
   color: var(--white);
-  font-size: clamp(1.35rem, 2.6vw, 2.05rem);
+  font-size: clamp(1.26rem, 2.2vw, 1.78rem);
   font-weight: 600;
   letter-spacing: -0.06em;
   line-height: 1;
@@ -1341,7 +1347,7 @@ h3 {
 .tech-metrics dd {
   margin-top: 7px;
   color: rgba(247, 247, 242, 0.48);
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
