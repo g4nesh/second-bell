@@ -20,7 +20,7 @@ from recommend import confidence_label, recommend_for_plan
 from impact import summarize_impact
 from afterschool import forecast_after_school_count
 from digital_twin import SENSOR_SOURCES, build_digital_twin
-from vision import VISION_CLASSES, export_commands, simulate_reduction_detection, vision_deployment_card
+from vision import ImageReductionVisionModel, VISION_CLASSES, export_commands, simulate_reduction_detection, vision_deployment_card
 
 DATA_PATH = ROOT / "data" / "second_bell_synthetic_cafeteria.csv"
 MODEL_DIR = ROOT / "models"
@@ -188,6 +188,14 @@ def assert_digital_twin_and_vision_layers(pred: pd.DataFrame, history: pd.DataFr
     assert {"ONNX laptop/edge runtime", "Apple CoreML package", "NVIDIA TensorRT engine"}.issubset(
         set(export_commands()["target"])
     )
+
+    before = np.full((72, 72, 3), 255, dtype=np.uint8)
+    before[12:60, 12:60] = np.array([70, 130, 70], dtype=np.uint8)
+    after = np.full((72, 72, 3), 255, dtype=np.uint8)
+    after[12:34, 12:34] = np.array([70, 130, 70], dtype=np.uint8)
+    cv_result = ImageReductionVisionModel().compare(before, after)
+    assert cv_result["status"] == "reduced"
+    assert float(cv_result["visual_reduction_pct"]) > 40.0
 
 
 def main() -> None:

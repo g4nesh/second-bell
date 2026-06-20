@@ -72,7 +72,7 @@ Those projects are useful for demonstrating pressure-derived load-cell readings 
 
 ## Vision Deployment Path
 
-The included `CafeteriaVisionModel` wrapper can load `models/cafeteria_yolo.pt` if trained weights are added and `ultralytics` is installed. The app currently runs a deterministic simulated detection layer so the demo stays lightweight. Export commands are shown in the dashboard for ONNX, Apple CoreML, and TensorRT targets.
+The included `ImageReductionVisionModel` can compare before/current serving-bin images to detect whether an item station is reducing or staying untouched. The `CafeteriaVisionModel` wrapper can also load `models/cafeteria_yolo.pt` if trained weights are added and `ultralytics` is installed. The app runs deterministic simulated detections for the default dashboard and exposes an upload-based baseline model for real before/after image checks. Export commands are shown in the dashboard for ONNX, Apple CoreML, and TensorRT targets.
 
 Optional live CV install:
 

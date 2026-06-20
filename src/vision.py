@@ -4,7 +4,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import numpy as np
 import pandas as pd
+from PIL import Image
 
 
 VISION_CLASSES = [
@@ -52,6 +54,71 @@ class CafeteriaVisionModel:
         return self._model.predict(source=source, conf=self.confidence, stream=True)
 
 
+class ImageReductionVisionModel:
+    """Small deployable baseline that compares before/after serving-bin images."""
+
+    def __init__(self, foreground_cutoff: int = 244, min_channel_spread: int = 12):
+        self.foreground_cutoff = foreground_cutoff
+        self.min_channel_spread = min_channel_spread
+
+    def compare(self, before_source, after_source) -> Dict[str, float | str | int]:
+        before = _to_rgb_array(before_source)
+        after = _to_rgb_array(after_source)
+        if before.shape != after.shape:
+            after = np.asarray(
+                Image.fromarray(after).resize((before.shape[1], before.shape[0])),
+                dtype=np.uint8,
+            )
+
+        before_mask = self._foreground_mask(before)
+        after_mask = self._foreground_mask(after)
+        before_area = int(before_mask.sum())
+        after_area = int(after_mask.sum())
+        if before_area <= 0:
+            reduction_pct = 0.0
+            confidence = 0.0
+            status = "no foreground detected"
+        else:
+            reduction_pct = max(0.0, min(1.0, (before_area - after_area) / before_area))
+            changed_area = int(np.logical_xor(before_mask, after_mask).sum())
+            confidence = min(0.98, max(0.15, changed_area / max(before_area, 1)))
+            if reduction_pct >= 0.18:
+                status = "reduced"
+            elif reduction_pct <= 0.05:
+                status = "not reduced"
+            else:
+                status = "minor change"
+
+        return {
+            "before_foreground_pixels": before_area,
+            "after_foreground_pixels": after_area,
+            "visual_reduction_pct": round(reduction_pct * 100, 1),
+            "confidence": round(float(confidence), 2),
+            "status": status,
+        }
+
+    def _foreground_mask(self, image: np.ndarray) -> np.ndarray:
+        channel_max = image.max(axis=2).astype(np.int16)
+        channel_min = image.min(axis=2).astype(np.int16)
+        mean = image.mean(axis=2)
+        colorful = (channel_max - channel_min) >= self.min_channel_spread
+        not_background = mean <= self.foreground_cutoff
+        return colorful | not_background
+
+
+def _to_rgb_array(source) -> np.ndarray:
+    if isinstance(source, np.ndarray):
+        arr = source
+    else:
+        arr = np.asarray(Image.open(source).convert("RGB"), dtype=np.uint8)
+
+    if arr.ndim == 2:
+        arr = np.stack([arr, arr, arr], axis=2)
+    if arr.shape[2] == 4:
+        arr = arr[:, :, :3]
+    return arr.astype(np.uint8)
+
+
 def vision_deployment_card() -> pd.DataFrame:
     return pd.DataFrame(
         [
@@ -62,7 +129,7 @@ def vision_deployment_card() -> pd.DataFrame:
             },
             {
                 "layer": "model",
-                "implementation": "YOLO detector or segmentation model trained on cafeteria line, tray-return, and share-table frames",
+                "implementation": "Baseline before/after reduction model plus YOLO detector or segmentation weights when labeled frames exist",
                 "why_it_matters": "Detects what is reducing, what is untouched, and what returns sealed.",
             },
             {

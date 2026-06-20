@@ -4,3 +4,4 @@ numpy>=1.26,<3.0
 scikit-learn>=1.7,<1.9
 plotly>=5.18,<7.0
 joblib>=1.4,<2.0
+pillow>=10.0,<12.0

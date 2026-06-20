@@ -22,7 +22,7 @@ from simulate_data import generate_cafeteria_history
 from train_models import FEATURES, MODEL_FILES, train_all
 from afterschool import forecast_after_school_count
 from digital_twin import build_digital_twin
-from vision import VISION_CLASSES, export_commands, simulate_reduction_detection, vision_deployment_card
+from vision import ImageReductionVisionModel, VISION_CLASSES, export_commands, simulate_reduction_detection, vision_deployment_card
 
 st.set_page_config(page_title="Second Bell", layout="wide")
 
@@ -357,6 +357,19 @@ with st.expander("Deployable CV model contract"):
     st.write("The demo can run in simulation mode, or load `models/cafeteria_yolo.pt` when trained weights are added.")
     st.dataframe(vision_deployment_card(), use_container_width=True, hide_index=True)
     st.dataframe(export_commands(), use_container_width=True, hide_index=True)
+
+with st.expander("Run baseline reduction vision on two images"):
+    before_image = st.file_uploader("Before serving-bin image", type=["png", "jpg", "jpeg"], key="before_bin_image")
+    after_image = st.file_uploader("Current serving-bin image", type=["png", "jpg", "jpeg"], key="after_bin_image")
+    if before_image and after_image:
+        reduction_result = ImageReductionVisionModel().compare(before_image, after_image)
+        r1, r2, r3 = st.columns(3)
+        r1.metric("Visual reduction", f"{reduction_result['visual_reduction_pct']:.1f}%")
+        r2.metric("CV status", str(reduction_result["status"]))
+        r3.metric("CV confidence", f"{float(reduction_result['confidence']) * 100:.0f}%")
+        st.json(reduction_result)
+    else:
+        st.caption("Upload before and current images to run the deployable baseline model without YOLO weights.")
 
 st.subheader("5. Why this is happening")
 show_cols = [
