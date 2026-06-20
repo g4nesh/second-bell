@@ -180,31 +180,31 @@
         <div class="array-sticky">
           <div class="array-copy">
             <p class="eyebrow">Production inference array</p>
-            <h2>Built like a real AI decision system.</h2>
+            <h2>From cafeteria signals to one approved rescue action.</h2>
             <p>
-              The demo follows the actual pipeline: encode the cafeteria day, run model heads, compile
-              safety constraints, then render a manager-approved action receipt.
+              This is one live inference run: encode the lunch day, run four model heads, compile food-safety
+              gates, and return the single action Ms. Rivera can approve.
             </p>
             <div class="array-steps" aria-label="Inference stages">
               <div class="array-step active" data-array-step="0">
                 <span>01</span>
-                <strong>Feature encoder</strong>
-                <p>One row per item-period with categorical encoding and scaled numeric signals.</p>
+                <strong>Input row</strong>
+                <p>Menu, event, period, cooler, monitor, and after-school demand become one item-period record.</p>
               </div>
               <div class="array-step" data-array-step="1">
                 <span>02</span>
-                <strong>Model heads</strong>
-                <p>Risk, return interval, demand, and anomaly models run in parallel.</p>
+                <strong>Model ensemble</strong>
+                <p>Risk, return interval, demand, and anomaly heads run in parallel on the same feature vector.</p>
               </div>
               <div class="array-step" data-array-step="2">
                 <span>03</span>
-                <strong>Policy compiler</strong>
-                <p>Cold-chain, packaging, monitor, capacity, and approval gates filter actions.</p>
+                <strong>Safety gate</strong>
+                <p>Cold-chain, packaging, monitor, capacity, and approval gates remove unsafe actions.</p>
               </div>
               <div class="array-step" data-array-step="3">
                 <span>04</span>
-                <strong>Live demo receipt</strong>
-                <p>Only approved primary marginal actions count toward recovery totals.</p>
+                <strong>Approved action</strong>
+                <p>The app returns one timed recommendation and a capped impact receipt.</p>
               </div>
             </div>
           </div>
@@ -218,44 +218,47 @@
 
             <div class="array-pipeline">
               <div class="pipeline-col col-intake">
-                <span>Signal intake</span>
+                <span>1 / Input</span>
                 <strong>Rainy Tuesday</strong>
                 <small>pasta bowl / juniors away / 175 after school</small>
               </div>
               <div class="pipeline-col col-encode">
-                <span>Feature encoder</span>
+                <span>2 / Encode</span>
                 <strong>22 features</strong>
                 <small>categorical one-hot + numeric scaler</small>
               </div>
               <div class="pipeline-col col-heads">
-                <span>Prediction heads</span>
+                <span>3 / Predict</span>
                 <strong>4 model families</strong>
                 <small>risk / quantiles / demand / anomaly</small>
               </div>
               <div class="pipeline-col col-policy">
-                <span>Policy compiler</span>
+                <span>4 / Compile</span>
                 <strong>7 gates</strong>
                 <small>sealed + monitored + cold-chain + capacity</small>
+              </div>
+              <div class="pipeline-col col-action">
+                <span>5 / Decide</span>
+                <strong>1 action</strong>
+                <small>deploy cooler before tray-return spike</small>
               </div>
             </div>
 
             <div class="model-rack">
-              <div class="rack-row row-risk"><span>RandomForestClassifier</span><strong>ghost risk 0.82</strong></div>
-              <div class="rack-row row-q10"><span>Quantile GBR q10</span><strong>64 cartons</strong></div>
-              <div class="rack-row row-q50"><span>Quantile GBR q50</span><strong>77 cartons</strong></div>
-              <div class="rack-row row-q90"><span>Quantile GBR q90</span><strong>91 cartons</strong></div>
-              <div class="rack-row row-demand"><span>RandomForestRegressor</span><strong>175 snack demand</strong></div>
-              <div class="rack-row row-anomaly"><span>IsolationForest</span><strong>manager review</strong></div>
+              <div class="rack-row row-risk"><span>Risk classifier</span><strong>ghost risk 0.82</strong></div>
+              <div class="rack-row row-q50"><span>Return interval</span><strong>150-190 items</strong></div>
+              <div class="rack-row row-demand"><span>Demand match</span><strong>175 snack requests</strong></div>
+              <div class="rack-row row-anomaly"><span>Anomaly check</span><strong>manager review</strong></div>
             </div>
 
             <div class="receipt-panel">
               <div class="receipt-top">
-                <span>Action receipt</span>
-                <strong>approved plan</strong>
+                <span>Approved action</span>
+                <strong>deploy monitored cooler</strong>
               </div>
               <div class="receipt-line"><span>deploy-by</span><strong>12:12 PM</strong></div>
-              <div class="receipt-line"><span>safe recovery</span><strong>sealed + monitored</strong></div>
-              <div class="receipt-line"><span>counted impact</span><strong>179 items</strong></div>
+              <div class="receipt-line"><span>safety gate</span><strong>sealed + monitored</strong></div>
+              <div class="receipt-line"><span>impact counted</span><strong>175 items</strong></div>
               <div class="receipt-line"><span>blocked</span><strong>unsafe alternatives</strong></div>
             </div>
           </div>
