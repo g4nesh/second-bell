@@ -1090,6 +1090,288 @@ h3 {
   background: rgba(183, 217, 255, 0.92);
 }
 
+.tech-stack {
+  display: grid;
+  gap: clamp(28px, 4vw, 54px);
+  background:
+    radial-gradient(circle at 18% 20%, rgba(183, 217, 255, 0.1), transparent 24%),
+    radial-gradient(circle at 82% 62%, rgba(229, 193, 90, 0.08), transparent 24%),
+    var(--ink);
+}
+
+.tech-copy {
+  max-width: 910px;
+}
+
+.tech-copy h2 {
+  max-width: 880px;
+  font-size: clamp(2.8rem, 5.7vw, 5.6rem);
+  line-height: 0.92;
+}
+
+.tech-copy p:last-child {
+  max-width: 720px;
+  margin-top: 18px;
+  font-size: 1.05rem;
+}
+
+.tech-workbench {
+  display: grid;
+  min-height: 650px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(330px, 0.65fr);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    rgba(255, 255, 255, 0.035);
+  background-size: 42px 42px, 42px 42px, auto;
+}
+
+.tech-scene-wrap {
+  position: relative;
+  height: 650px;
+  min-height: 650px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 45% 44%, rgba(183, 217, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 72% 68%, rgba(247, 247, 242, 0.06), transparent 26%),
+    #070707;
+}
+
+#tech-stack-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 650px;
+}
+
+.tech-scene-fallback {
+  position: absolute;
+  inset: 38px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  align-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0.95;
+  transition: opacity 360ms var(--ease);
+}
+
+.tech-three-ready .tech-scene-fallback {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tech-scene-fallback span {
+  display: grid;
+  min-height: 140px;
+  place-items: center;
+  background: rgba(247, 247, 242, 0.08);
+  color: rgba(247, 247, 242, 0.76);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.tech-scene-labels {
+  position: absolute;
+  inset: 24px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.tech-scene-label {
+  position: absolute;
+  max-width: 210px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(5, 5, 5, 0.54);
+  color: rgba(247, 247, 242, 0.62);
+  padding: 10px 12px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  backdrop-filter: blur(14px);
+  opacity: 0.42;
+  transform: translateY(8px);
+  transition: opacity 300ms var(--ease), transform 300ms var(--ease), background 300ms var(--ease), color 300ms var(--ease);
+}
+
+.tech-scene-label.active {
+  background: rgba(247, 247, 242, 0.92);
+  color: var(--ink);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tech-scene-label:nth-child(1) {
+  top: 20px;
+  left: 22px;
+}
+
+.tech-scene-label:nth-child(2) {
+  top: 26px;
+  right: 34%;
+}
+
+.tech-scene-label:nth-child(3) {
+  right: 30px;
+  bottom: 118px;
+}
+
+.tech-scene-label:nth-child(4) {
+  right: 34px;
+  bottom: 28px;
+}
+
+.tech-control-panel {
+  display: grid;
+  align-content: start;
+  gap: 22px;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(5, 5, 5, 0.72);
+  padding: 26px;
+}
+
+.tech-panel-head {
+  display: grid;
+  gap: 10px;
+}
+
+.tech-panel-head span,
+.tech-button span,
+.tech-stack-card span {
+  color: rgba(247, 247, 242, 0.48);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tech-panel-head strong {
+  color: var(--white);
+  font-size: clamp(2rem, 3.2vw, 3.5rem);
+  font-weight: 500;
+  letter-spacing: -0.075em;
+  line-height: 0.96;
+}
+
+.tech-buttons {
+  display: grid;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tech-button {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  border: 0;
+  background: rgba(247, 247, 242, 0.06);
+  color: rgba(247, 247, 242, 0.64);
+  padding: 0 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 260ms var(--ease), color 260ms var(--ease), transform 260ms var(--ease);
+}
+
+.tech-button:hover {
+  background: rgba(247, 247, 242, 0.12);
+}
+
+.tech-button.active {
+  background: rgba(247, 247, 242, 0.92);
+  color: var(--ink);
+  transform: translateX(-4px);
+}
+
+.tech-button.active span,
+.tech-button.active strong {
+  color: var(--ink);
+}
+
+.tech-button strong {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.tech-detail {
+  min-height: 132px;
+  color: rgba(247, 247, 242, 0.74);
+  font-size: 0.98rem;
+  line-height: 1.58;
+}
+
+.tech-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tech-metrics div {
+  min-width: 0;
+  background: rgba(247, 247, 242, 0.07);
+  padding: 14px;
+}
+
+.tech-metrics dt,
+.tech-metrics dd {
+  margin: 0;
+}
+
+.tech-metrics dt {
+  color: var(--white);
+  font-size: clamp(1.35rem, 2.6vw, 2.05rem);
+  font-weight: 600;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.tech-metrics dd {
+  margin-top: 7px;
+  color: rgba(247, 247, 242, 0.48);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tech-stack-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tech-stack-card {
+  min-height: 220px;
+  background: rgba(247, 247, 242, 0.06);
+  padding: 24px;
+}
+
+.tech-stack-card h3 {
+  margin-top: 34px;
+  color: var(--white);
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  line-height: 1;
+}
+
+.tech-stack-card p {
+  margin-top: 16px;
+  font-size: 0.9rem;
+}
+
 .clock-section {
   display: grid;
   align-items: center;
@@ -1672,6 +1954,36 @@ h3 {
     width: min(350px, calc(50% - 34px));
   }
 
+  .tech-workbench {
+    min-height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .tech-scene-wrap,
+  #tech-stack-canvas {
+    height: 520px;
+    min-height: 520px;
+  }
+
+  .tech-control-panel {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-left: 0;
+  }
+
+  .tech-buttons {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tech-button {
+    grid-template-columns: 1fr;
+    align-content: center;
+    min-height: 78px;
+  }
+
+  .tech-stack-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .industry-copy,
   .industry-list,
   .industry-stage {
@@ -2018,6 +2330,107 @@ h3 {
   .receipt-top strong,
   .receipt-line strong {
     font-size: 0.74rem;
+  }
+
+  .tech-stack {
+    gap: 24px;
+  }
+
+  .tech-copy p:last-child {
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+
+  .tech-scene-wrap,
+  #tech-stack-canvas {
+    height: 420px;
+    min-height: 420px;
+  }
+
+  .tech-scene-fallback {
+    inset: 16px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tech-scene-fallback span {
+    min-height: 96px;
+    font-size: 0.62rem;
+  }
+
+  .tech-scene-labels {
+    inset: 14px;
+  }
+
+  .tech-scene-label {
+    top: 46px !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 22px !important;
+    max-width: calc(100% - 44px);
+    font-size: 0.58rem;
+    opacity: 0;
+  }
+
+  .tech-scene-label.active {
+    opacity: 1;
+  }
+
+  .tech-control-panel {
+    gap: 18px;
+    padding: 18px;
+  }
+
+  .tech-panel-head strong {
+    font-size: clamp(1.9rem, 10vw, 2.6rem);
+  }
+
+  .tech-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tech-button {
+    min-height: 62px;
+    padding: 0 11px;
+  }
+
+  .tech-button strong {
+    font-size: 0.82rem;
+  }
+
+  .tech-detail {
+    min-height: 124px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .tech-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .tech-metrics div {
+    display: flex;
+    min-height: 58px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .tech-metrics dd {
+    margin-top: 0;
+    text-align: right;
+  }
+
+  .tech-stack-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tech-stack-card {
+    min-height: 176px;
+    padding: 20px;
+  }
+
+  .tech-stack-card h3 {
+    margin-top: 28px;
   }
 
   .clock-top {
