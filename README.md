@@ -8,6 +8,7 @@ Second Bell is an AI-powered rescue clock for high school cafeterias. It predict
 - Challenge 2: Make Climate Action Local and Real
 - Direction A: Food Waste Rescue Radar
 - Local user: Ms. Rivera, a cafeteria manager at Cedar Grove High School, working with a student eco-club monitor
+- Devpost: https://devpost.com/software/second-bell
 
 Second Bell is not a general food-waste dashboard. It focuses on one local pathway:
 

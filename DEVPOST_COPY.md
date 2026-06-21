@@ -9,6 +9,7 @@ Enter the 8-character code from the AI Qualifier email.
 - Track: High School
 - Challenge: Challenge Brief 2 - Make Climate Action Local and Real
 - Direction: Direction A - Food Waste Rescue Radar
+- Devpost: https://devpost.com/software/second-bell
 
 ## Elevator Pitch
 
