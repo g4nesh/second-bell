@@ -1,386 +1,902 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Second Bell is an AI rescue clock for unopened school cafeteria food, predicting ghost components and recommending safe timed interventions."
-    />
-    <meta name="theme-color" content="#050505" />
-    <title>Second Bell | Reliable AI for School Food Rescue</title>
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="assets/site.css" />
-  </head>
-  <body>
-    <div class="scroll-progress" aria-hidden="true"></div>
-
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="Second Bell home">
-        <span class="brand-glyph" aria-hidden="true"></span>
-        <span>second bell</span>
-      </a>
-      <nav aria-label="Primary navigation">
-        <a href="#platform">Platform</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#inference">Inference</a>
-        <a href="#clock">Clock</a>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Second Bell App</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f5f6f0;
+      --panel: #ffffff;
+      --ink: #181a1f;
+      --muted: #646b76;
+      --line: #dfe3dc;
+      --accent: #166a4d;
+      --accent-2: #f2b84b;
+      --danger: #9f352f;
+      --shadow: 0 20px 60px rgba(31, 42, 55, 0.10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(245, 246, 240, 0.92);
+      padding: 14px 22px;
+      backdrop-filter: blur(12px);
+    }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 20px; letter-spacing: 0; }
+    h2 { font-size: 16px; letter-spacing: 0; }
+    h3 { font-size: 14px; letter-spacing: 0; }
+    main {
+      display: grid;
+      grid-template-columns: 330px minmax(0, 1fr);
+      min-height: calc(100vh - 58px);
+    }
+    aside {
+      border-right: 1px solid var(--line);
+      background: #fbfbf7;
+      padding: 18px;
+    }
+    .content {
+      display: grid;
+      gap: 18px;
+      padding: 18px;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 16px;
+    }
+    .panel-body { padding: 16px; }
+    .controls {
+      display: grid;
+      gap: 14px;
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    select, input[type="number"], input[type="file"], input[type="text"], input[type="range"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 11px;
+      font: inherit;
+    }
+    input[type="checkbox"] { width: 18px; height: 18px; }
+    .check-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px;
+    }
+    button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      padding: 0 15px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 14px;
+    }
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .metric strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 24px;
+    }
+    .grid-two {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(360px, 0.8fr);
+      gap: 18px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+    .actions {
+      display: grid;
+      gap: 10px;
+    }
+    .action-card {
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--accent);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+    .action-card.guardrail { border-left-color: var(--danger); }
+    .action-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      background: #edf4ef;
+      color: var(--accent);
+      padding: 0 9px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .tag.warn { background: #fff5dd; color: #815b09; }
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+    .status {
+      min-width: 150px;
+      color: var(--muted);
+      text-align: right;
+    }
+    .error {
+      display: none;
+      border: 1px solid #e3b6b2;
+      border-radius: 8px;
+      background: #fff3f2;
+      color: var(--danger);
+      padding: 12px;
+      font-weight: 700;
+    }
+    .tabbar {
+      display: flex;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 6px;
+      width: max-content;
+      max-width: 100%;
+    }
+    .tab-button {
+      min-height: 36px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 0 12px;
+    }
+    .tab-button.active {
+      border-color: var(--line);
+      background: var(--accent);
+      color: #fff;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active {
+      display: grid;
+      gap: 18px;
+    }
+    .inline-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .result-card {
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfbf7;
+      padding: 12px;
+    }
+    .result-main {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .result-main strong { font-size: 28px; }
+    code {
+      display: block;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f5f6f0;
+      padding: 12px;
+      color: #27313a;
+      font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+    }
+    .vision-stage {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #101418;
+      aspect-ratio: 16 / 9;
+    }
+    .vision-stage video,
+    .vision-stage canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .vision-stage video { opacity: 1; pointer-events: none; }
+    .vision-stage canvas { pointer-events: none; }
+    .trackpad-pad {
+      --pressure: 0;
+      display: grid;
+      min-height: 260px;
+      place-items: center;
+      border: 1px solid rgba(19, 26, 33, 0.18);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(22, 106, 77, calc(0.08 + var(--pressure) * 0.34)), transparent 62%),
+        linear-gradient(145deg, #f9faf5, #e8ebe4);
+      box-shadow:
+        inset 0 calc(-6px - var(--pressure) * 16px) calc(18px + var(--pressure) * 20px) rgba(24, 26, 31, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        0 calc(14px + var(--pressure) * 18px) calc(34px + var(--pressure) * 22px) rgba(31, 42, 55, 0.16);
+      text-align: center;
+      transform: scale(calc(1 - var(--pressure) * 0.018));
+      transition: transform 120ms linear, box-shadow 120ms linear, background 120ms linear;
+    }
+    .trackpad-pad span,
+    .trackpad-pad small {
+      display: block;
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .trackpad-pad strong {
+      display: block;
+      margin: 8px 0;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      line-height: 0.95;
+    }
+    @media (max-width: 980px) {
+      main, .grid-two, .inline-grid { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Second Bell</h1>
+      <p class="muted small">Functional Vercel app backed by the cafeteria ML artifacts.</p>
+    </div>
+    <div id="status" class="status">Ready</div>
+  </header>
+  <main>
+    <aside>
+      <form id="controls" class="controls">
+        <label>Day
+          <select name="day_of_week">
+            <option>Monday</option><option selected>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option>
+          </select>
+        </label>
+        <label>Weather
+          <select name="weather_tag">
+            <option>normal</option><option selected>rainy</option><option>hot</option><option>cold</option><option>windy</option>
+          </select>
+        </label>
+        <label>School event
+          <select name="event_tag">
+            <option>normal</option><option selected>field_trip</option><option>exam_day</option><option>assembly</option><option>sports_away</option><option>club_fair</option><option>early_release</option>
+          </select>
+        </label>
+        <label>Main entree
+          <select name="entree">
+            <option selected>pasta bowl</option><option>veggie wrap</option><option>chicken sandwich</option><option>cheese pizza</option><option>rice bowl</option><option>taco tray</option>
+          </select>
+        </label>
+        <label>Expected attendance
+          <input name="expected_attendance" type="number" min="700" max="1120" step="10" value="910" />
+        </label>
+        <div class="check-row">
+          <div>
+            <strong>Share-table monitor</strong>
+            <div class="muted small">Enables cold-chain rescue gates.</div>
+          </div>
+          <input name="share_table_monitor" type="checkbox" checked />
+        </div>
+        <label>Cooler capacity
+          <input name="cooler_capacity" type="number" min="0" max="120" step="5" value="90" />
+        </label>
+        <label>Line placement mode
+          <select name="line_mode">
+            <option value="default" selected>Default placement</option>
+            <option value="after_entree">Move fruit/milk after entree</option>
+          </select>
+        </label>
+        <button type="submit">Run cafeteria forecast</button>
+      </form>
+    </aside>
+    <section class="content">
+      <div id="error" class="error"></div>
+      <nav class="tabbar" aria-label="App views">
+        <button class="tab-button active" type="button" data-tab="forecast-tab">Forecast</button>
+        <button class="tab-button" type="button" data-tab="lab-tab">Vision + Scale Lab</button>
       </nav>
-      <div class="header-actions">
-        <a class="quiet-link" href="submission.html">Devpost</a>
-        <a class="solid-link" href="submission.html#build">View build</a>
-      </div>
-    </header>
-
-    <main id="top">
-      <section class="hero media-section">
-        <div class="hero-media" aria-hidden="true"></div>
-        <div class="hero-shade" aria-hidden="true"></div>
-        <div class="hero-copy">
-          <p class="pretitle">Food Waste Rescue Radar / High School Track</p>
-          <h1>Reliable AI for the cafeteria’s shortest rescue window.</h1>
-          <p>
-            Second Bell predicts unopened milk, whole fruit, and sealed sides before they leave a safe
-            recovery state using a model ensemble, safety compiler, and human approval loop.
-          </p>
-        </div>
-        <a class="scroll-cue" href="#platform" aria-label="Scroll to explore">
-          <span>Scroll to explore</span>
-          <i aria-hidden="true"></i>
-        </a>
+      <section id="forecast-tab" class="tab-panel active">
+        <section class="metrics">
+          <div class="metric"><span>After-school forecast</span><strong id="m-after">-</strong><div class="muted small" id="m-after-range">-</div></div>
+          <div class="metric"><span>Items recovered</span><strong id="m-items">-</strong><div class="muted small" id="m-actions">-</div></div>
+          <div class="metric"><span>Kg diverted</span><strong id="m-kg">-</strong><div class="muted small">food waste avoided</div></div>
+          <div class="metric"><span>CO2e avoided</span><strong id="m-co2">-</strong><div class="muted small">kg CO2e</div></div>
+          <div class="metric"><span>Value protected</span><strong id="m-cost">-</strong><div class="muted small">estimated dollars</div></div>
+        </section>
+        <section class="grid-two">
+          <div class="panel">
+            <div class="panel-head"><h2>Ghost Component Forecast</h2><span class="tag">Q10 / Q50 / Q90</span></div>
+            <div class="panel-body"><div id="forecast"></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Recommended Action Plan</h2><span class="tag warn">human approval</span></div>
+            <div class="panel-body"><div id="actions" class="actions"></div></div>
+          </div>
+        </section>
+        <section class="grid-two">
+          <div class="panel">
+            <div class="panel-head"><h2>Digital Twin Estimates</h2><span class="tag">sensor fusion</span></div>
+            <div class="panel-body"><div id="twin"></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Vision Reduction Model</h2><span class="tag">baseline CV</span></div>
+            <div class="panel-body"><div id="vision"></div></div>
+          </div>
+        </section>
       </section>
-
-      <section class="logo-strip" aria-label="Second Bell signal chain">
-        <div class="marquee">
-          <span>menu signals</span>
-          <span>attendance shift</span>
-          <span>ghost risk</span>
-          <span>cold-chain gate</span>
-          <span>human approval</span>
-          <span>impact receipt</span>
-          <span>menu signals</span>
-          <span>attendance shift</span>
-          <span>ghost risk</span>
-          <span>cold-chain gate</span>
-          <span>human approval</span>
-          <span>impact receipt</span>
-        </div>
-      </section>
-
-      <section id="platform" class="section intro">
-        <div class="section-head reveal">
-          <p class="eyebrow">Applications</p>
-          <h2>AI systems that actually fit a school lunch period.</h2>
-        </div>
-        <div class="intro-grid">
-          <article class="intro-card reveal">
-            <span>01</span>
-            <h3>Predict the ghost component.</h3>
-            <p>Detect items that were served but never wanted: unopened milk, apples, fruit cups, yogurt, carrots, and sealed sides.</p>
-          </article>
-          <article class="intro-card reveal">
-            <span>02</span>
-            <h3>Find the safe window.</h3>
-            <p>Connect line behavior, lunch period, weather, events, cooler capacity, and after-school demand to a timed action.</p>
-          </article>
-          <article class="intro-card reveal">
-            <span>03</span>
-            <h3>Keep humans in control.</h3>
-            <p>Food safety, packaging, temperature, and policy approval stay with cafeteria staff before any recovery is counted.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="image-band">
-        <div class="band-media" aria-hidden="true"></div>
-        <div class="band-copy reveal">
-          <p class="eyebrow">Data</p>
-          <h2>The model turns ordinary cafeteria counts into operational timing.</h2>
-          <p>
-            No student names. No cameras. No private records. Just aggregate cafeteria patterns and a narrow
-            question: what will return unopened, and what can still be safely rescued?
-          </p>
-        </div>
-      </section>
-
-      <section id="architecture" class="architecture" aria-label="Second Bell architecture animation">
-        <div class="architecture-sticky">
-          <div class="architecture-copy">
-            <p class="eyebrow">Architecture</p>
-            <div class="arch-step active" data-arch-step="0">
-              <span>01 / Feature Intake</span>
-              <h2>Aggregate cafeteria signals become a structured feature vector.</h2>
-              <p>Twenty-two features describe the operating day: menu, period, attendance, weather, event, line placement, cooler capacity, monitor status, and after-school demand.</p>
-            </div>
-            <div class="arch-step" data-arch-step="1">
-              <span>02 / Prediction Heads</span>
-              <h2>Specialized models score the same day from different angles.</h2>
-              <p>A risk classifier, quantile return forecasters, demand regressor, and anomaly detector run together so the demo shows uncertainty instead of one brittle number.</p>
-            </div>
-            <div class="arch-step" data-arch-step="2">
-              <span>03 / Safety Compiler</span>
-              <h2>Predictions are compiled into allowed and blocked actions.</h2>
-              <p>The rescue-window state machine checks packaging, monitor status, cooler capacity, cold-chain assumptions, and policy approval before any action can count.</p>
-            </div>
-            <div class="arch-step" data-arch-step="3">
-              <span>04 / Human Loop</span>
-              <h2>The output is not a chart. It is an approval-ready decision.</h2>
-              <p>Second Bell explains the action, deadline, safety gate, confidence range, labor minutes, and impact receipt. Ms. Rivera still approves or blocks it.</p>
+      <section id="lab-tab" class="tab-panel">
+        <section class="grid-two">
+          <div class="panel">
+            <div class="panel-head"><h2>Live CV Line Monitor</h2><span class="tag">taken items</span></div>
+            <div class="panel-body">
+              <div class="controls">
+                <div class="vision-stage">
+                  <video id="camera-video" playsinline muted></video>
+                  <canvas id="vision-canvas" width="640" height="360"></canvas>
+                </div>
+                <div class="inline-grid">
+                  <button id="start-camera" type="button">Start webcam detector</button>
+                  <button id="detect-frame" type="button" class="secondary">Detect taken items</button>
+                </div>
+                <div class="inline-grid">
+                  <label>Single frame upload<input id="vision-frame-file" type="file" accept="image/*" /></label>
+                  <button id="clear-detections" type="button" class="secondary">Clear detections</button>
+                </div>
+                <div class="muted small" id="vision-model-status">COCO-SSD model not loaded.</div>
+              </div>
+              <div id="vision-detect-result" class="result-card" style="margin-top: 14px;"></div>
             </div>
           </div>
-
-          <div class="architecture-stage" aria-hidden="true">
-            <div class="arch-grid"></div>
-            <div class="arch-beam beam-a"></div>
-            <div class="arch-beam beam-b"></div>
-            <div class="arch-core">
-              <span>Second Bell</span>
-              <strong>Inference Core</strong>
+          <div class="panel">
+            <div class="panel-head"><h2>Dynamic Trackpad Scale</h2><span class="tag">hardcoded demo</span></div>
+            <div class="panel-body">
+              <div class="controls">
+                <label>Item
+                  <select id="scale-item">
+                    <option selected>white milk</option><option>chocolate milk</option><option>apple</option><option>banana</option><option>fruit cup</option><option>baby carrots</option><option>yogurt cup</option><option>granola pack</option>
+                  </select>
+                </label>
+                <div id="trackpad-pad" class="trackpad-pad">
+                  <div>
+                    <span>Live weight</span>
+                    <strong id="pad-weight">0g</strong>
+                    <small id="pad-count">0 items</small>
+                  </div>
+                </div>
+                <div class="inline-grid">
+                  <button id="start-scale-live" type="button">Start record</button>
+                  <button id="stop-scale-live" type="button" class="secondary">Stop record</button>
+                </div>
+                <div class="muted small" id="scale-bridge-status">Press Start record to play the hardcoded scale curve.</div>
+              </div>
+              <div id="scale-result" class="result-card" style="margin-top: 14px;"></div>
             </div>
-            <div class="arch-lane lane-input">
-              <div class="lane-title">Inputs</div>
-              <div class="data-chip chip-1">menu</div>
-              <div class="data-chip chip-2">weather</div>
-              <div class="data-chip chip-3">field trip</div>
-              <div class="data-chip chip-4">cooler 90</div>
-            </div>
-            <div class="arch-lane lane-model">
-              <div class="lane-title">Model Layer</div>
-              <div class="model-node node-risk">Risk classifier</div>
-              <div class="model-node node-quantile">Q10 / Q50 / Q90</div>
-              <div class="model-node node-anomaly">Anomaly detector</div>
-              <div class="model-node node-demand">Demand matcher</div>
-            </div>
-            <div class="arch-lane lane-output">
-              <div class="lane-title">Action</div>
-              <div class="action-slab slab-1">Deploy cooler</div>
-              <div class="action-slab slab-2">Compile gates</div>
-              <div class="action-slab slab-3">Approval receipt</div>
-            </div>
-            <div class="arch-stat stat-a"><span>training rows</span><strong>10,688</strong></div>
-            <div class="arch-stat stat-b"><span>features</span><strong>22</strong></div>
-            <div class="arch-stat stat-c"><span>school days</span><strong>540</strong></div>
-            <svg class="arch-lines" viewBox="0 0 900 620" preserveAspectRatio="none">
-              <path class="line line-one" d="M110 170 C250 160 270 310 420 310" />
-              <path class="line line-two" d="M120 430 C270 420 280 320 420 320" />
-              <path class="line line-three" d="M500 310 C650 290 650 150 792 145" />
-              <path class="line line-four" d="M500 330 C650 350 650 480 792 486" />
-            </svg>
           </div>
-        </div>
+        </section>
       </section>
+    </section>
+  </main>
+  <script>
+    const form = document.querySelector("#controls");
+    const statusEl = document.querySelector("#status");
+    const errorEl = document.querySelector("#error");
+    const fields = Object.fromEntries(new FormData(form).entries());
 
-      <section id="inference" class="inference-array" aria-label="Second Bell production inference array">
-        <div class="array-sticky">
-          <div class="array-copy">
-            <p class="eyebrow">Production inference array</p>
-            <h2>From cafeteria signals to one approved rescue action.</h2>
-            <p>
-              This is one live inference run: encode the lunch day, run four model heads, compile food-safety
-              gates, and return the single action Ms. Rivera can approve.
-            </p>
-            <div class="array-steps" aria-label="Inference stages">
-              <div class="array-step active" data-array-step="0">
-                <span>01</span>
-                <strong>Input row</strong>
-                <p>Menu, event, period, cooler, monitor, and after-school demand become one item-period record.</p>
-              </div>
-              <div class="array-step" data-array-step="1">
-                <span>02</span>
-                <strong>Model ensemble</strong>
-                <p>Risk, return interval, demand, and anomaly heads run in parallel on the same feature vector.</p>
-              </div>
-              <div class="array-step" data-array-step="2">
-                <span>03</span>
-                <strong>Safety gate</strong>
-                <p>Cold-chain, packaging, monitor, capacity, and approval gates remove unsafe actions.</p>
-              </div>
-              <div class="array-step" data-array-step="3">
-                <span>04</span>
-                <strong>Approved action</strong>
-                <p>The app returns one timed recommendation and a capped impact receipt.</p>
-              </div>
+    function payload() {
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.expected_attendance = Number(data.expected_attendance);
+      data.cooler_capacity = Number(data.cooler_capacity);
+      data.share_table_monitor = form.elements.share_table_monitor.checked;
+      data.approved_action_ids = [];
+      return data;
+    }
+
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+
+    function table(rows, columns) {
+      if (!rows || !rows.length) return '<p class="muted">No rows returned.</p>';
+      return `<table><thead><tr>${columns.map(col => `<th>${esc(col.label)}</th>`).join("")}</tr></thead><tbody>${rows.map(row => `<tr>${columns.map(col => `<td>${esc(col.format ? col.format(row[col.key], row) : row[col.key])}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.querySelectorAll(".tab-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".tab-button").forEach((item) => item.classList.toggle("active", item === button));
+        document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("active", panel.id === button.dataset.tab));
+      });
+    });
+
+    function render(data) {
+      const impact = data.impact;
+      document.querySelector("#m-after").textContent = data.afterschool.predicted_count;
+      document.querySelector("#m-after-range").textContent = `${data.afterschool.low}-${data.afterschool.high} students`;
+      document.querySelector("#m-items").textContent = impact.items_recovered_mid;
+      document.querySelector("#m-actions").textContent = `${impact.selected_action_count} approved primary actions`;
+      document.querySelector("#m-kg").textContent = impact.kg_diverted_mid;
+      document.querySelector("#m-co2").textContent = impact.co2e_mid;
+      document.querySelector("#m-cost").textContent = `$${impact.cost_mid}`;
+
+      document.querySelector("#forecast").innerHTML = table(data.predictions.slice(0, 12), [
+        { key: "menu_item", label: "item" },
+        { key: "lunch_period", label: "lunch" },
+        { key: "predicted_return_q50", label: "q50" },
+        { key: "predicted_return_q10", label: "q10" },
+        { key: "predicted_return_q90", label: "q90" },
+        { key: "ghost_risk_probability", label: "risk", format: v => `${Math.round(Number(v) * 100)}%` },
+        { key: "confidence", label: "conf." },
+        { key: "driver_explanation", label: "why" }
+      ]);
+
+      document.querySelector("#actions").innerHTML = data.actions.slice(0, 8).map(action => `
+        <article class="action-card ${action.card_role === "Guardrail" ? "guardrail" : ""}">
+          <div class="action-top">
+            <div>
+              <h3>${esc(action.recommended_action)}</h3>
+              <p class="muted small">${esc(action.menu_item)} / lunch ${esc(action.lunch_period)} / deploy by ${esc(action.deploy_by)}</p>
             </div>
+            <span class="tag">${esc(action.card_role)}</span>
           </div>
+          <p>${esc(action.why)}</p>
+          <p class="muted small">Expected recovery: ${esc(action.expected_items_recovered)} items. Safety gate: ${esc(action.safety_gate)}</p>
+        </article>
+      `).join("");
 
-          <div class="array-stage" aria-hidden="true">
-            <div class="array-scan"></div>
-            <div class="array-grid-bg"></div>
-            <div class="array-node node-a"></div>
-            <div class="array-node node-b"></div>
-            <div class="array-node node-c"></div>
+      document.querySelector("#twin").innerHTML = table(data.digital_twin.item_estimates.slice(0, 10), [
+        { key: "menu_item", label: "item" },
+        { key: "lunch_period", label: "lunch" },
+        { key: "digital_twin_estimate", label: "estimate" },
+        { key: "digital_twin_low", label: "low" },
+        { key: "digital_twin_high", label: "high" },
+        { key: "sensor_count", label: "sensors" }
+      ]);
 
-            <div class="array-pipeline">
-              <div class="pipeline-col col-intake">
-                <span>1 / Input</span>
-                <strong>Rainy Tuesday</strong>
-                <small>pasta bowl / juniors away / 175 after school</small>
-              </div>
-              <div class="pipeline-col col-encode">
-                <span>2 / Encode</span>
-                <strong>22 features</strong>
-                <small>categorical one-hot + numeric scaler</small>
-              </div>
-              <div class="pipeline-col col-heads">
-                <span>3 / Predict</span>
-                <strong>4 model families</strong>
-                <small>risk / quantiles / demand / anomaly</small>
-              </div>
-              <div class="pipeline-col col-policy">
-                <span>4 / Compile</span>
-                <strong>7 gates</strong>
-                <small>sealed + monitored + cold-chain + capacity</small>
-              </div>
-              <div class="pipeline-col col-action">
-                <span>5 / Decide</span>
-                <strong>1 action</strong>
-                <small>deploy cooler before tray-return spike</small>
-              </div>
-            </div>
+      document.querySelector("#vision").innerHTML = table(data.vision.slice(0, 10), [
+        { key: "menu_item", label: "item" },
+        { key: "lunch_period", label: "lunch" },
+        { key: "vision_class", label: "class" },
+        { key: "visual_reduction_pct", label: "reduction", format: v => `${v}%` },
+        { key: "status", label: "status" }
+      ]);
+    }
 
-            <div class="model-rack">
-              <div class="rack-row row-risk"><span>Risk classifier</span><strong>ghost risk 0.82</strong></div>
-              <div class="rack-row row-q50"><span>Return interval</span><strong>150-190 items</strong></div>
-              <div class="rack-row row-demand"><span>Demand match</span><strong>175 snack requests</strong></div>
-              <div class="rack-row row-anomaly"><span>Anomaly check</span><strong>manager review</strong></div>
-            </div>
+    const video = document.querySelector("#camera-video");
+    const visionCanvas = document.querySelector("#vision-canvas");
+    const visionCtx = visionCanvas.getContext("2d");
+    const captureCanvas = document.createElement("canvas");
+    captureCanvas.width = visionCanvas.width;
+    captureCanvas.height = visionCanvas.height;
+    const captureCtx = captureCanvas.getContext("2d");
+    let cameraStream = null;
+    let scaleAnimationFrame = null;
+    let scaleAnimationStart = 0;
+    let liveDetectBusy = false;
+    let cocoModel = null;
+    let cocoLoop = null;
+    let uploadedImage = null;
+    const takenTotals = {};
+    const recentTaken = [];
+    const detectableFoodClasses = new Set(["apple", "banana", "orange", "sandwich", "pizza", "donut", "cake", "bottle", "cup", "bowl"]);
+    const scaleUnitWeights = {
+      "white milk": 240,
+      "chocolate milk": 240,
+      "apple": 180,
+      "banana": 140,
+      "fruit cup": 120,
+      "baby carrots": 90,
+      "yogurt cup": 170,
+      "granola pack": 40
+    };
 
-            <div class="receipt-panel">
-              <div class="receipt-top">
-                <span>Approved action</span>
-                <strong>deploy monitored cooler</strong>
-              </div>
-              <div class="receipt-line"><span>deploy-by</span><strong>12:12 PM</strong></div>
-              <div class="receipt-line"><span>safety gate</span><strong>sealed + monitored</strong></div>
-              <div class="receipt-line"><span>impact counted</span><strong>175 items</strong></div>
-              <div class="receipt-line"><span>blocked</span><strong>unsafe alternatives</strong></div>
-            </div>
-          </div>
-        </div>
-      </section>
+    function cafeteriaLabel(className) {
+      if (className === "bottle" || className === "cup") return "milk/drink";
+      if (className === "bowl") return "sealed bowl/side";
+      return className;
+    }
 
-      <section id="clock" class="section clock-section">
-        <div class="clock-copy reveal">
-          <p class="eyebrow">Rescue Clock</p>
-          <h2>Rainy Tuesday. Pasta lunch. Juniors away.</h2>
-          <p>
-            The strongest demo scenario is a specific one. Second Bell sees second-lunch milk risk, fruit
-            placement risk, and after-school demand before tray returns become a disposal problem.
-          </p>
-        </div>
+    async function loadCocoModel() {
+      if (cocoModel) return cocoModel;
+      const modelStatus = document.querySelector("#vision-model-status");
+      modelStatus.textContent = "Loading COCO-SSD object detector...";
+      if (!window.cocoSsd) throw new Error("COCO-SSD library did not load.");
+      cocoModel = await window.cocoSsd.load({ base: "lite_mobilenet_v2" });
+      modelStatus.textContent = "COCO-SSD loaded. Detecting COCO food/drink objects and ignoring people for taken-food counts.";
+      return cocoModel;
+    }
 
-        <div class="clock-system reveal" aria-label="Animated rescue clock">
-          <div class="clock-top">
-            <span>12:12 PM</span>
-            <span>Second lunch alert</span>
-          </div>
-          <div class="orbital">
-            <div class="orbit orbit-one"></div>
-            <div class="orbit orbit-two"></div>
-            <div class="orbit-center">
-              <strong>64-91</strong>
-              <span>unopened cartons</span>
-            </div>
-          </div>
-          <div class="decision-stack">
-            <div class="decision active">
-              <small>Primary action</small>
-              <strong>Deploy monitored cooler before tray-return spike.</strong>
-            </div>
-            <div class="decision">
-              <small>Prevention</small>
-              <strong>Stage cold items in two waves.</strong>
-            </div>
-            <div class="decision">
-              <small>Guardrail</small>
-              <strong>Manager approval required before routing.</strong>
-            </div>
-          </div>
-        </div>
-      </section>
+    function syncVisionCanvas(source) {
+      const width = source.videoWidth || source.naturalWidth || source.width || 640;
+      const height = source.videoHeight || source.naturalHeight || source.height || 360;
+      if (visionCanvas.width !== width || visionCanvas.height !== height) {
+        visionCanvas.width = width;
+        visionCanvas.height = height;
+        captureCanvas.width = width;
+        captureCanvas.height = height;
+      }
+    }
 
-      <section class="industry-panel">
-        <div class="industry-copy reveal">
-          <p class="eyebrow">Food waste track</p>
-          <h2>Served-but-unwanted food is a hidden school climate lever.</h2>
-        </div>
-        <div class="industry-list reveal" aria-label="Second Bell focus areas">
-          <button class="industry-item active" data-panel="0">Artificial Intelligence</button>
-          <button class="industry-item" data-panel="1">Food Rescue</button>
-          <button class="industry-item" data-panel="2">Cold Chain</button>
-          <button class="industry-item" data-panel="3">After School</button>
-          <button class="industry-item" data-panel="4">Responsible AI</button>
-        </div>
-        <div class="industry-stage reveal">
-          <article class="industry-card active">
-            <h3>Pattern detection plus recommendations.</h3>
-            <p>Classifier, quantile forecasts, demand matching, anomaly detection, and a rule-constrained action scorer.</p>
-          </article>
-          <article class="industry-card">
-            <h3>Keep food feeding students.</h3>
-            <p>Second Bell prioritizes prevention, share-table recovery, and same-day approved routing before disposal.</p>
-          </article>
-          <article class="industry-card">
-            <h3>Cold items need stricter gates.</h3>
-            <p>Sealed packaging, monitored cooler capacity, and temperature assumptions are visible in every counted action.</p>
-          </article>
-          <article class="industry-card">
-            <h3>Surplus meets real same-day demand.</h3>
-            <p>Tutoring, robotics, band, and track can use eligible sealed items without outside donation logistics.</p>
-          </article>
-          <article class="industry-card">
-            <h3>The AI does not approve food safety.</h3>
-            <p>Human approval is not decoration. It is the control that keeps the system realistic and responsible.</p>
-          </article>
-        </div>
-      </section>
+    function normalizeCocoPrediction(prediction) {
+      const [x, y, w, h] = prediction.bbox;
+      const centerY = y + h / 2;
+      const pickupZoneY = visionCanvas.height * 0.56;
+      const isFood = detectableFoodClasses.has(prediction.class);
+      return {
+        item_label: cafeteriaLabel(prediction.class),
+        coco_class: prediction.class,
+        confidence: Number(prediction.score.toFixed(2)),
+        bbox_px: { x, y, w, h },
+        taken: isFood && centerY >= pickupZoneY,
+        food_candidate: isFood,
+      };
+    }
 
-      <section id="proof" class="section proof">
-        <div class="section-head reveal">
-          <p class="eyebrow">Impact</p>
-          <h2>From forecast to receipt.</h2>
-        </div>
-        <div class="proof-grid">
-          <article class="proof-card reveal">
-            <span data-count="175">0</span>
-            <p>items recovered in the demo receipt</p>
-          </article>
-          <article class="proof-card reveal">
-            <span data-count="31">0</span>
-            <p>kg of food diverted from disposal</p>
-          </article>
-          <article class="proof-card reveal">
-            <span data-count="52">0</span>
-            <p>kg CO2e avoided as an estimate, not a false-precision claim</p>
-          </article>
-        </div>
-      </section>
+    function recordTakenEvents(detections) {
+      const now = performance.now();
+      detections.filter((row) => row.taken).forEach((row) => {
+        const box = row.bbox_px;
+        const cx = (box.x + box.w / 2) / visionCanvas.width;
+        const cy = (box.y + box.h / 2) / visionCanvas.height;
+        const duplicate = recentTaken.some((event) => (
+          event.label === row.item_label &&
+          now - event.time < 3500 &&
+          Math.hypot(event.cx - cx, event.cy - cy) < 0.22
+        ));
+        if (!duplicate) {
+          takenTotals[row.item_label] = (takenTotals[row.item_label] || 0) + 1;
+          recentTaken.push({ label: row.item_label, cx, cy, time: now });
+        }
+      });
+      while (recentTaken.length > 30) recentTaken.shift();
+    }
 
-      <section id="submit" class="closing media-section">
-        <div class="closing-media" aria-hidden="true"></div>
-        <div class="hero-shade" aria-hidden="true"></div>
-        <div class="closing-copy reveal">
-          <p class="pretitle">Submission-ready prototype</p>
-          <h2>Built for Challenge 2: local, measurable, AI-driven, and human-approved.</h2>
-          <div class="closing-actions">
-            <a class="solid-link large" href="submission.html">Open Devpost page</a>
-            <a class="quiet-link large" href="submission.html#build">Read the build notes</a>
-          </div>
-        </div>
-      </section>
-    </main>
+    function drawCocoDetections(detections, sourceIsUpload = false) {
+      if (!sourceIsUpload) visionCtx.clearRect(0, 0, visionCanvas.width, visionCanvas.height);
+      const pickupZoneY = visionCanvas.height * 0.56;
+      detections.forEach((row) => {
+        const { x, y, w, h } = row.bbox_px;
+        const color = row.taken ? "#f2b84b" : row.food_candidate ? "#58d6a3" : "#9aa4af";
+        visionCtx.fillStyle = row.taken ? "rgba(242, 184, 75, 0.22)" : row.food_candidate ? "rgba(88, 214, 163, 0.18)" : "rgba(154, 164, 175, 0.10)";
+        visionCtx.strokeStyle = color;
+        visionCtx.lineWidth = row.taken ? 4 : 2;
+        visionCtx.beginPath();
+        visionCtx.roundRect(x, y, w, h, 8);
+        visionCtx.fill();
+        visionCtx.stroke();
+        visionCtx.fillStyle = color;
+        visionCtx.fillRect(x, Math.max(0, y - 26), Math.min(w + 120, 260), 26);
+        visionCtx.fillStyle = "#101418";
+        visionCtx.font = "700 14px system-ui";
+        visionCtx.fillText(`${row.taken ? "taken " : ""}${row.item_label} ${Math.round(row.confidence * 100)}%`, x + 7, Math.max(17, y - 8));
+      });
+      visionCtx.strokeStyle = "rgba(242, 184, 75, 0.74)";
+      visionCtx.setLineDash([8, 8]);
+      visionCtx.beginPath();
+      visionCtx.moveTo(0, pickupZoneY);
+      visionCtx.lineTo(visionCanvas.width, pickupZoneY);
+      visionCtx.stroke();
+      visionCtx.setLineDash([]);
+    }
 
-    <footer class="footer">
-      <span>Second Bell</span>
-      <span>AI food waste rescue clock for local school climate action.</span>
-    </footer>
+    function renderCocoResults(detections) {
+      const countRows = Object.entries(takenTotals).map(([label, count]) => `<div>${esc(label)}: <strong>${esc(count)}</strong></div>`).join("") || '<div class="muted">No food/drink has entered the pickup zone yet.</div>';
+      const visibleRows = detections.slice(0, 10).map((row) => `<div class="muted small">${esc(row.taken ? "taken" : row.food_candidate ? "visible" : "ignored")} / ${esc(row.item_label)} / ${esc(row.confidence)}</div>`).join("");
+      document.querySelector("#vision-detect-result").innerHTML = `
+        <div class="result-main"><span class="muted">Taken events</span><strong>${esc(Object.values(takenTotals).reduce((sum, count) => sum + count, 0))}</strong></div>
+        ${countRows}
+        ${visibleRows}
+      `;
+    }
 
-    <script src="assets/site.js"></script>
-  </body>
+    async function detectWithCoco(source, sourceIsUpload = false) {
+      statusEl.textContent = "Running COCO-SSD...";
+      errorEl.style.display = "none";
+      try {
+        const model = await loadCocoModel();
+        syncVisionCanvas(source);
+        if (sourceIsUpload) {
+          visionCtx.clearRect(0, 0, visionCanvas.width, visionCanvas.height);
+          visionCtx.drawImage(source, 0, 0, visionCanvas.width, visionCanvas.height);
+        }
+        const predictions = await model.detect(source);
+        const detections = predictions
+          .filter((prediction) => prediction.score >= 0.45)
+          .map(normalizeCocoPrediction)
+          .sort((a, b) => Number(b.taken) - Number(a.taken) || Number(b.food_candidate) - Number(a.food_candidate) || b.confidence - a.confidence);
+        recordTakenEvents(detections);
+        drawCocoDetections(detections, sourceIsUpload);
+        renderCocoResults(detections);
+        statusEl.textContent = "COCO-SSD updated";
+      } catch (error) {
+        errorEl.textContent = error.message;
+        errorEl.style.display = "block";
+        statusEl.textContent = "Error";
+      }
+    }
+
+    async function liveDetectTick() {
+      if (!cameraStream || liveDetectBusy) return;
+      liveDetectBusy = true;
+      await detectWithCoco(video, false);
+      liveDetectBusy = false;
+    }
+
+    async function startCamera() {
+      errorEl.style.display = "none";
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+        video.srcObject = cameraStream;
+        await video.play();
+        await loadCocoModel();
+        syncVisionCanvas(video);
+        visionCtx.clearRect(0, 0, visionCanvas.width, visionCanvas.height);
+        statusEl.textContent = "Camera live";
+        liveDetectTick();
+        if (!cocoLoop) cocoLoop = window.setInterval(liveDetectTick, 900);
+      } catch (error) {
+        errorEl.textContent = error.message || "Could not start camera.";
+        errorEl.style.display = "block";
+        statusEl.textContent = "Camera error";
+      }
+    }
+
+    function updateTrackpadVisual(data) {
+      const pad = document.querySelector("#trackpad-pad");
+      const weight = Number(data.net_weight_g ?? data.gross_weight_g ?? 0);
+      const pressure = Math.max(0, Math.min(1, weight / 1600));
+      pad.style.setProperty("--pressure", pressure.toFixed(3));
+      document.querySelector("#pad-weight").textContent = `${Math.round(weight)}g`;
+      document.querySelector("#pad-count").textContent = `${esc(data.estimated_item_count ?? 0)} items`;
+      document.querySelector("#scale-result").innerHTML = `
+        <div class="result-main"><span class="muted">Estimated count</span><strong>${esc(data.estimated_item_count)}</strong></div>
+        <div>${esc(data.menu_item)} / ${esc(data.net_weight_g)}g net / ${esc(data.confidence)} confidence</div>
+        <div class="muted small">Unit weight: ${esc(data.unit_weight_g)}g. Sensor sigma: ${esc(data.sensor_observation.sigma)} items.</div>
+        <div class="muted small">Source: ${esc(data.source)}</div>
+      `;
+    }
+
+    function clientScaleReading(weight, extra = {}) {
+      const menuItem = document.querySelector("#scale-item").value;
+      const unitWeight = scaleUnitWeights[menuItem] || 100;
+      const gross = Number(weight || 0);
+      const tare = Number(extra.tare_weight_g || 0);
+      const baseline = Number(extra.baseline_weight_g || 0);
+      const net = Math.max(0, gross - tare - baseline);
+      const stableSamples = Number(extra.stable_samples || 8);
+      const fingerContact = extra.finger_contact !== false && net > 0;
+      const confidence = !fingerContact || net <= 0 ? "Low" : stableSamples >= 6 ? "High" : stableSamples >= 3 ? "Medium" : "Low";
+      return {
+        menu_item: menuItem,
+        gross_weight_g: Number(gross.toFixed(1)),
+        tare_weight_g: Number(tare.toFixed(1)),
+        baseline_weight_g: Number(baseline.toFixed(1)),
+        net_weight_g: Number(net.toFixed(1)),
+        unit_weight_g: unitWeight,
+        estimated_item_count: Number((net / unitWeight).toFixed(1)),
+        confidence,
+        sensor_observation: {
+          sigma: confidence === "High" ? 1 : confidence === "Medium" ? 1.8 : 2.6
+        },
+        source: extra.source || "browser fallback scale"
+      };
+    }
+
+    function applyHardcodedScale(weight, source = "hardcoded scale demo") {
+      const data = clientScaleReading(weight, {
+        stable_samples: weight > 0 ? 10 : 0,
+        finger_contact: weight > 0,
+        source
+      });
+      updateTrackpadVisual(data);
+      return data;
+    }
+
+    function hardcodedScaleCurve(elapsedMs) {
+      const targetWeight = 512;
+      const riseMs = 2000;
+      const fallMs = 3000;
+      const curveStrength = 5.2;
+      if (elapsedMs <= riseMs) {
+        const normalizedTime = elapsedMs / riseMs;
+        const normalizedWeight = (1 - Math.exp(-curveStrength * normalizedTime)) / (1 - Math.exp(-curveStrength));
+        return targetWeight * normalizedWeight;
+      }
+      const fallTime = Math.min(1, (elapsedMs - riseMs) / fallMs);
+      const weight = targetWeight * Math.exp(-curveStrength * fallTime);
+      return weight < 2 ? 0 : weight;
+    }
+
+    function startHardcodedScaleRecording() {
+      stopHardcodedScaleRecording("Recording hardcoded scale curve...");
+      errorEl.style.display = "none";
+      statusEl.textContent = "Recording scale";
+      scaleAnimationStart = performance.now();
+      applyHardcodedScale(0, "hardcoded scale demo");
+
+      const tick = (now) => {
+        const elapsed = now - scaleAnimationStart;
+        const weight = hardcodedScaleCurve(elapsed);
+        applyHardcodedScale(weight, "hardcoded exponential scale demo");
+
+        if (elapsed <= 2000) {
+          document.querySelector("#scale-bridge-status").textContent = `Recording: rising toward 512g (${Math.round(weight)}g).`;
+        } else if (weight > 0) {
+          document.querySelector("#scale-bridge-status").textContent = `Recording: decaying back down (${Math.round(weight)}g).`;
+        }
+
+        if (weight > 0 || elapsed <= 2000) {
+          scaleAnimationFrame = window.requestAnimationFrame(tick);
+        } else {
+          scaleAnimationFrame = null;
+          applyHardcodedScale(0, "hardcoded exponential scale demo");
+          document.querySelector("#scale-bridge-status").textContent = "Recording finished. Press Start record to replay.";
+          statusEl.textContent = "Updated";
+        }
+      };
+
+      scaleAnimationFrame = window.requestAnimationFrame(tick);
+    }
+
+    function stopHardcodedScaleRecording(message = "Recording stopped. Weight reset to 0g.") {
+      if (scaleAnimationFrame) window.cancelAnimationFrame(scaleAnimationFrame);
+      scaleAnimationFrame = null;
+      applyHardcodedScale(0, "hardcoded scale demo stopped");
+      document.querySelector("#scale-bridge-status").textContent = message;
+      statusEl.textContent = "Updated";
+    }
+
+    async function run() {
+      statusEl.textContent = "Running models...";
+      errorEl.style.display = "none";
+      try {
+        const response = await fetch("/api/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload())
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Request failed");
+        render(data);
+        statusEl.textContent = "Updated";
+      } catch (error) {
+        errorEl.textContent = error.message;
+        errorEl.style.display = "block";
+        statusEl.textContent = "Error";
+      }
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      run();
+    });
+    document.querySelector("#start-camera").addEventListener("click", startCamera);
+    document.querySelector("#detect-frame").addEventListener("click", () => {
+      if (uploadedImage) detectWithCoco(uploadedImage, true);
+      else if (cameraStream) detectWithCoco(video, false);
+      else document.querySelector("#vision-model-status").textContent = "Start the webcam or upload a frame first.";
+    });
+    document.querySelector("#clear-detections").addEventListener("click", () => {
+      Object.keys(takenTotals).forEach((key) => delete takenTotals[key]);
+      recentTaken.splice(0, recentTaken.length);
+      uploadedImage = null;
+      visionCtx.clearRect(0, 0, visionCanvas.width, visionCanvas.height);
+      document.querySelector("#vision-detect-result").innerHTML = '<div class="muted">Detections cleared.</div>';
+    });
+    document.querySelector("#vision-frame-file").addEventListener("change", async (event) => {
+      const file = event.currentTarget.files && event.currentTarget.files[0];
+      if (!file) return;
+      const imageData = await fileToDataUrl(file);
+      const img = new Image();
+      img.onload = () => {
+        uploadedImage = img;
+        detectWithCoco(img, true);
+      };
+      img.src = imageData;
+    });
+    document.querySelector("#scale-item").addEventListener("change", () => {
+      stopHardcodedScaleRecording("Item changed. Press Start record to replay.");
+    });
+    document.querySelector("#start-scale-live").addEventListener("click", startHardcodedScaleRecording);
+    document.querySelector("#stop-scale-live").addEventListener("click", () => stopHardcodedScaleRecording());
+    document.querySelector("#vision-detect-result").innerHTML = '<div class="muted">Start the webcam detector to load COCO-SSD.</div>';
+    applyHardcodedScale(0, "hardcoded scale demo idle");
+    run();
+  </script>
+</body>
 </html>

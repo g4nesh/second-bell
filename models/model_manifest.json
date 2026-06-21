@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "project": "Second Bell",
-  "python_version": "3.12.2",
+  "python_version": "3.12.4",
   "platform": "macOS-26.3.1-arm64-arm-64bit",
   "package_versions": {
-    "joblib": "1.4.2",
+    "joblib": "1.5.1",
     "numpy": "1.26.4",
     "pandas": "2.2.2",
-    "scikit_learn": "1.5.1"
+    "scikit_learn": "1.7.0"
   },
   "features": [
     "day_of_week",

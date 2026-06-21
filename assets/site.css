@@ -898,35 +898,6 @@ h3 {
   transform: skewX(-17deg) translateX(calc(-150% + var(--array-local) * 760%));
 }
 
-.array-node {
-  position: absolute;
-  z-index: 2;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--signal);
-  box-shadow: 0 0 26px rgba(183, 217, 255, 0.72);
-  opacity: 0.78;
-  animation: nodePulse 2.4s ease-in-out infinite;
-}
-
-.node-a {
-  top: 22%;
-  left: 18%;
-}
-
-.node-b {
-  top: 44%;
-  left: 52%;
-  animation-delay: 0.45s;
-}
-
-.node-c {
-  right: 17%;
-  bottom: 22%;
-  animation-delay: 0.9s;
-}
-
 .array-pipeline,
 .model-rack,
 .receipt-panel {
@@ -1536,18 +1507,6 @@ h3 {
 @keyframes orbit {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes nodePulse {
-  0%,
-  100% {
-    opacity: 0.38;
-    transform: scale(0.9);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.28);
   }
 }
 
