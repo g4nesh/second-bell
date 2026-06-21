@@ -1,0 +1,8 @@
+{
+  "name": "second-bell-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp index.html submission.html .nojekyll dist/ && cp -R assets dist/assets"
+  }
+}

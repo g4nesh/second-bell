@@ -92,6 +92,16 @@ streamlit run app.py
 
 The app validates model artifacts at startup. If a checked-in model cannot be loaded or its manifest does not match the current feature schema, Second Bell regenerates synthetic data and retrains the models automatically.
 
+## Deploy to Vercel
+
+The Vercel deployment publishes the static demo site, not the Streamlit dashboard runtime:
+
+```bash
+npm run build
+```
+
+Vercel uses `vercel.json` to run that build and serve the generated `dist/` directory. The interactive Streamlit dashboard should be deployed to a Python app host that supports long-running Streamlit processes.
+
 ## Data Disclosure
 
 All data is synthetic. The generator creates item-by-lunch-period rows with realistic patterns for day of week, weather, school events, expected and actual attendance, lunch periods, menu items, line placement, share-table monitor availability, cooler capacity, after-school activity count, unopened returns, share-table pickups, after-school pickups, discarded items, and estimated food/CO2e/dollar impacts.

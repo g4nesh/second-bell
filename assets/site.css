@@ -424,7 +424,7 @@ h3 {
   gap: clamp(36px, 5vw, 76px);
   width: min(1244px, calc(100vw - 36px));
   margin: 0 auto;
-  padding: 90px 0;
+  padding: clamp(76px, 9vh, 96px) 0 clamp(64px, 8vh, 82px);
 }
 
 .architecture-copy {
@@ -479,11 +479,11 @@ h3 {
   --arch-local: 0;
   --arch-phase: 0;
   position: relative;
-  height: min(680px, calc(100vh - 180px));
-  min-height: 540px;
+  height: min(720px, calc(100vh - 150px));
+  min-height: 580px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 9px;
+  border-radius: 10px;
   background:
     linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
@@ -583,21 +583,21 @@ h3 {
 }
 
 .lane-input {
-  top: 54px;
-  left: 28px;
+  top: 64px;
+  left: 32px;
   width: 214px;
 }
 
 .lane-model {
   right: 50%;
-  bottom: 28px;
+  bottom: 62px;
   width: 268px;
   transform: translateX(50%);
 }
 
 .lane-output {
-  top: 54px;
-  right: 28px;
+  top: 64px;
+  right: 32px;
   width: 216px;
 }
 
@@ -635,7 +635,7 @@ h3 {
 }
 
 .model-node {
-  transform: translateY(calc(34px - var(--arch-local) * 54px));
+  transform: translateY(calc(12px - var(--arch-local) * 24px));
 }
 
 .node-quantile {
@@ -653,7 +653,7 @@ h3 {
 .action-slab {
   background: rgba(247, 247, 242, 0.92);
   color: var(--ink);
-  transform: translateX(calc(22px - var(--arch-local) * 22px));
+  transform: translateX(calc(12px - var(--arch-local) * 12px));
 }
 
 .slab-2 {
@@ -740,7 +740,7 @@ h3 {
   padding: 12px 14px;
   backdrop-filter: blur(14px);
   opacity: calc(0.18 + var(--arch-local) * 0.82);
-  transform: translateY(calc(18px - var(--arch-local) * 22px));
+  transform: translateY(calc(8px - var(--arch-local) * 14px));
 }
 
 .arch-stat span {
@@ -758,19 +758,19 @@ h3 {
 }
 
 .stat-a {
-  left: 28px;
-  bottom: 28px;
+  left: 32px;
+  bottom: 44px;
 }
 
 .stat-b {
   left: 50%;
-  top: 30px;
-  transform: translateX(-50%) translateY(calc(18px - var(--arch-local) * 22px));
+  top: 36px;
+  transform: translateX(-50%) translateY(calc(8px - var(--arch-local) * 14px));
 }
 
 .stat-c {
-  right: 28px;
-  bottom: 28px;
+  right: 32px;
+  bottom: 44px;
 }
 
 .inference-array {
@@ -791,7 +791,7 @@ h3 {
   gap: clamp(36px, 5vw, 82px);
   width: min(1244px, calc(100vw - 36px));
   margin: 0 auto;
-  padding: 82px 0 54px;
+  padding: 86px 0 68px;
 }
 
 .array-copy h2 {
@@ -852,11 +852,11 @@ h3 {
 .array-stage {
   --array-local: 0;
   position: relative;
-  height: min(600px, calc(100vh - 190px));
-  min-height: 510px;
+  height: min(660px, calc(100vh - 158px));
+  min-height: 560px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 9px;
+  border-radius: 10px;
   background:
     linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
@@ -938,7 +938,7 @@ h3 {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1px;
-  margin: 28px 28px 0;
+  margin: 32px 32px 0;
   background: rgba(255, 255, 255, 0.11);
 }
 
@@ -978,14 +978,14 @@ h3 {
 
 .model-rack {
   position: absolute;
-  left: 28px;
-  bottom: 30px;
+  left: 32px;
+  bottom: 52px;
   display: grid;
   gap: 1px;
-  width: min(430px, calc(50% - 42px));
+  width: min(430px, calc(50% - 54px));
   margin: 0;
   background: rgba(255, 255, 255, 0.12);
-  transform: translateY(calc(18px - var(--array-local) * 24px));
+  transform: translateY(calc(8px - var(--array-local) * 14px));
   transition: opacity 420ms var(--ease), transform 420ms var(--ease);
 }
 
@@ -1008,14 +1008,14 @@ h3 {
 
 .receipt-panel {
   position: absolute;
-  right: 28px;
-  bottom: 30px;
-  width: min(390px, calc(50% - 42px));
+  right: 32px;
+  bottom: 52px;
+  width: min(390px, calc(50% - 54px));
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 9px;
+  border-radius: 10px;
   background: rgba(5, 5, 5, 0.74);
   backdrop-filter: blur(18px);
-  transform: translateY(calc(24px - var(--array-local) * 28px));
+  transform: translateY(calc(8px - var(--array-local) * 14px));
   transition: opacity 420ms var(--ease), transform 420ms var(--ease);
 }
 
@@ -1059,7 +1059,7 @@ h3 {
 
 .array-stage[data-phase="0"] .model-rack,
 .array-stage[data-phase="0"] .receipt-panel {
-  opacity: 0.22;
+  opacity: 0.3;
 }
 
 .array-stage[data-phase="1"] .receipt-panel {
@@ -1587,11 +1587,11 @@ h3 {
     min-height: 100vh;
     align-content: center;
     gap: 30px;
-    padding: 72px 0 34px;
+    padding: 70px 0 44px;
   }
 
   .architecture-copy {
-    min-height: 300px;
+    min-height: 260px;
   }
 
   .architecture-copy > .eyebrow {
@@ -1612,8 +1612,8 @@ h3 {
   }
 
   .architecture-stage {
-    height: min(460px, 44vh);
-    min-height: 390px;
+    height: clamp(420px, 48vh, 500px);
+    min-height: 420px;
   }
 
   .inference-array {
@@ -1651,8 +1651,8 @@ h3 {
   }
 
   .array-stage {
-    height: 390px;
-    min-height: 390px;
+    height: 460px;
+    min-height: 460px;
   }
 
   .array-pipeline {
@@ -1660,16 +1660,21 @@ h3 {
     margin: 22px 22px 0;
   }
 
+  .pipeline-col {
+    min-height: 108px;
+    padding: 14px;
+  }
+
   .model-rack {
     left: 22px;
-    bottom: 22px;
-    width: min(380px, calc(50% - 34px));
+    bottom: 36px;
+    width: min(380px, calc(50% - 42px));
   }
 
   .receipt-panel {
     right: 22px;
-    bottom: 22px;
-    width: min(350px, calc(50% - 34px));
+    bottom: 36px;
+    width: min(350px, calc(50% - 42px));
   }
 
   .industry-copy,
@@ -1789,11 +1794,11 @@ h3 {
   .architecture-sticky {
     width: min(100vw - 24px, 1244px);
     gap: 22px;
-    padding: 70px 0 24px;
+    padding: 68px 0 28px;
   }
 
   .architecture-copy {
-    min-height: 380px;
+    min-height: 340px;
   }
 
   .arch-step h2 {
@@ -1805,8 +1810,8 @@ h3 {
   }
 
   .architecture-stage {
-    height: 340px;
-    min-height: 340px;
+    height: 370px;
+    min-height: 370px;
   }
 
   .arch-stat {
@@ -1828,7 +1833,7 @@ h3 {
 
   .lane-model {
     top: auto;
-    bottom: 14px;
+    bottom: 22px;
     left: 18px;
     right: 18px;
     width: auto;
@@ -1936,8 +1941,8 @@ h3 {
   }
 
   .array-stage {
-    height: 540px;
-    min-height: 540px;
+    height: 650px;
+    min-height: 650px;
   }
 
   .array-pipeline {
@@ -1946,7 +1951,7 @@ h3 {
   }
 
   .pipeline-col {
-    min-height: 56px;
+    min-height: 52px;
     padding: 8px 12px;
   }
 
@@ -1970,7 +1975,7 @@ h3 {
   }
 
   .rack-row {
-    min-height: 34px;
+    min-height: 32px;
     padding: 0 12px;
   }
 
@@ -1983,30 +1988,34 @@ h3 {
   }
 
   .receipt-panel {
+    position: absolute;
     left: 14px;
     right: 14px;
-    top: 150px;
-    bottom: auto;
+    top: auto;
+    bottom: 24px;
     width: auto;
+    margin: 0;
+    transform: none;
   }
 
   .array-stage[data-phase="0"] .receipt-panel,
   .array-stage[data-phase="1"] .receipt-panel {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(14px);
   }
 
   .array-stage[data-phase="2"] .receipt-panel {
     opacity: 0.42;
   }
 
+  .array-stage[data-phase="2"] .model-rack,
   .array-stage[data-phase="3"] .model-rack {
     opacity: 0;
   }
 
   .receipt-top,
   .receipt-line {
-    min-height: 34px;
+    min-height: 32px;
     padding: 0 12px;
   }
 
