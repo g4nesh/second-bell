@@ -63,9 +63,12 @@ Second Bell reconciles inconsistent observations rather than trusting one source
 
 ## Hardware Prototype Path
 
-The Vercel demo uses a hardcoded browser scale animation for the cafeteria tray-return prototype. Pressing "Start record" raises the displayed weight toward about 512g with decaying increments, then decays back to zero without requiring Apple SDK access, a local bridge, or trackpad hardware.
+For a hackathon-friendly prototype, the repo documents a Mac Force Touch trackpad bridge:
 
-For production, deployment should use calibrated food-service load cells and temperature loggers rather than the demo animation.
+- TrackWeight: https://github.com/KrishKrosh/TrackWeight
+- OpenMultitouchSupport: https://github.com/KrishKrosh/OpenMultitouchSupport
+
+Those projects are useful for demonstrating pressure-derived load-cell readings through Swift/macOS. They are not treated as certified production food-service scales; deployment should use calibrated load cells and temperature loggers.
 
 ## Vision Deployment Path
 
@@ -91,19 +94,13 @@ The app validates model artifacts at startup. If a checked-in model cannot be lo
 
 ## Deploy to Vercel
 
-The Vercel deployment publishes the static browser app and Python serverless API routes:
+The Vercel deployment publishes the static demo site, not the Streamlit dashboard runtime:
 
 ```bash
 npm run build
 ```
 
-Vercel uses `vercel.json` to run that build and serve `dist/`. The API files under `api/` expose `/api/run` and `/api/scale/reading`, so the browser demo can run model inference and scale normalization without Streamlit.
-
-The Streamlit dashboard remains available for local development:
-
-```bash
-streamlit run app.py
-```
+Vercel uses `vercel.json` to run that build and serve the generated `dist/` directory. The interactive Streamlit dashboard should be deployed to a Python app host that supports long-running Streamlit processes.
 
 ## Data Disclosure
 
